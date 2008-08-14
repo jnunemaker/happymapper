@@ -70,24 +70,29 @@ module HappyMapper
     end
     
     def parse(xml)
-      parser = XML::Parser.new
-      parser.string = xml
-      doc = parser.parse
+      if xml.is_a?(LibXML::XML::Node)
+        doc = xml
+      else
+        parser = XML::Parser.new
+        parser.string = xml
+        doc = parser.parse
+      end
       collection = []
       doc.find(get_tag_name).each do |el|
         obj = new
-        # TODO: reading value from xml should move to Item
-        attributes.each { |a| obj.send("#{a.name}=", a.typecast(el.attributes[a.xml_name])) }
-        elements.each   { |e| obj.send("#{e.name}=", e.typecast(el.find(e.xml_name).first.content)) }
+        attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
+        elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el)) }
         collection << obj
       end
-      collection
+      collection.length == 1 ? collection[0] : collection
     end
   end
   
   class Item
     attr_accessor :type, :xml_name
     attr_reader :name
+    
+    Types = [String, Float, Time, Date, DateTime, Integer, Boolean]
     
     def initialize(name, type, o={})
       self.name, self.type, self.xml_name = name, type, o.delete(:xml_name) || name.to_s
@@ -99,9 +104,11 @@ module HappyMapper
       @name = new_name.to_s
     end
     
+    # el.attributes[a.xml_name]
+    # el.find(e.xml_name).first.content
     def typecast(value)
       return value if value.kind_of?(type) || value.nil?
-      begin
+      begin        
         if    type == String    then value.to_s
         elsif type == Float     then value.to_f
         elsif type == Time      then Time.parse(value.to_s)
@@ -127,6 +134,27 @@ module HappyMapper
       rescue
         value
       end
+    end
+    
+    def from_xml_node(node)
+      if happy_mapper?
+        type.parse(node)
+      else
+        value = value_from_xml_node(node)
+        typecast(value)
+      end
+    end
+    
+    def value_from_xml_node(value)
+      value = if element?
+        value.find_first(xml_name).content
+      else
+        value.attributes[xml_name]
+      end
+    end
+    
+    def happy_mapper?
+      !Types.include?(type)
     end
     
     def element?

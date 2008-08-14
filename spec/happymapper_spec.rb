@@ -12,6 +12,20 @@ class Post
   attribute :extended, String
 end
 
+class User
+  include HappyMapper
+  
+  element :id, Integer
+  element :name, String
+  element :screen_name, String
+  element :location, String
+  element :description, String
+  element :profile_image_url, String
+  element :url, String
+  element :protected, Boolean
+  element :followers_count, Integer
+end
+
 class Status
   include HappyMapper
   
@@ -23,7 +37,9 @@ class Status
 	element :in_reply_to_status_id, Integer
 	element :in_reply_to_user_id, Integer
 	element :favorited, Boolean
+	element :user, User
 end
+
 describe HappyMapper do
   
   describe "being included into another class" do
@@ -77,7 +93,7 @@ describe HappyMapper do
   describe "#elements" do
     it "should only return elements for the current class" do
       Post.elements.size.should == 0
-      Status.elements.size.should == 8
+      Status.elements.size.should == 9
     end
   end
   
@@ -120,6 +136,15 @@ describe HappyMapper do
       first.in_reply_to_status_id.should == 1234
       first.in_reply_to_user_id.should == 12345
       first.favorited.should == false
+      first.user.id.should == 4243
+      first.user.name.should == 'John Nunemaker'
+      first.user.screen_name.should == 'jnunemaker'
+      first.user.location.should == 'Mishawaka, IN, US'
+      first.user.description.should == 'Loves his wife, ruby, notre dame football and iu basketball'
+      first.user.profile_image_url.should == 'http://s3.amazonaws.com/twitter_production/profile_images/53781608/Photo_75_normal.jpg'
+      first.user.url.should == 'http://addictedtonew.com'
+      first.user.protected.should == false
+      first.user.followers_count.should == 486
     end
   end
 end
