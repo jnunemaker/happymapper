@@ -1,11 +1,71 @@
-<html>
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>happymapper</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+	<title>HappyMapper by John Nunemaker</title> 
+	<link rel="stylesheet" href="css/common.css" type="text/css" /> 
+</head> 
+<body> 
+ 
+<div id="wrapper"> 
+	<div id="header"> 
+		<h1>HappyMapper</h1> 
+		<p>Object to xml mapping library.</p> 
 		
-	</head>
-	<body id="body">
-		<p>This page has not yet been created for RubyGem <code>happymapper</code></p>
-		<p>To the developer: To generate it, update website/index.txt and run the rake task <code>website</code> to generate this <code>index.html</code> file.</p>
-	</body>
+		<ul id="nav">
+			<li><a href="rdoc/">Docs</a></li> 
+			<li><a href="http://github.com/jnunemaker/happymapper">Github</a></li>
+			<li><a href="http://jnunemaker.lighthouseapp.com/projects/20014-happy-mapper/overview">Lighthouse</a></li>
+			<li><a href="http://rubyforge.org/projects/happymapper/">Rubyforge</a></li> 
+		</ul> 
+	</div> 
+	
+	<div id="content"> 
+		<h2>Install</h2> 
+		<pre><code>$ sudo gem install happymapper</code></pre> 
+		
+		<h2>Examples</h2>
+		
+<pre><code>class User
+  include HappyMapper
+
+  element :id, Integer
+  element :name, String
+  element :screen_name, String
+  element :location, String
+  element :description, String
+  element :profile_image_url, String
+  element :url, String
+  element :protected, Boolean
+  element :followers_count, Integer
+end
+
+class Status
+  include HappyMapper
+
+  element :id, Integer
+  element :text, String
+  element :created_at, Time
+  element :source, String
+  element :truncated, Boolean
+  element :in_reply_to_status_id, Integer
+  element :in_reply_to_user_id, Integer
+  element :favorited, Boolean
+  element :user, User, :single => true
+end
+
+statuses = Status.parse(file_contents)
+statuses.each do |status|
+  puts status.user.name, status.user.screen_name, status.text, status.source, ''
+end</code></pre>		
+		
+		<h2>Support</h2> 
+		<p>Conversations welcome in the <a href="http://groups.google.com/group/happymapper">google group</a> and bugs/features over at <a href="http://jnunemaker.lighthouseapp.com/projects/20014-happy-mapper/overview">Lightouse</a>.</p> 
+	</div> 
+ 
+	<div id="footer"> 
+		<p>Created by <a href="http://addictedtonew.com/about/">John Nunemaker</a></p> 
+	</div> 
+</div>  
+</body> 
 </html>
