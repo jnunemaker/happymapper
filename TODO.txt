@@ -1,7 +1,7 @@
-* xml with namespace(s) doesn't work
-* the whole should something be a attribute or a collection is awkward
-		ie: should user be an array or not, right now i'm assuming it's always an array
-		unless you pass :single => true with a happy mapper class
+* xml with namespaces don't work
+* the "should something be a attribute or a collection" is awkward
+	ie: should user be an array or not, right now i'm assuming it's always 
+	an array unless you pass :single => true with a happy mapper class
 		class User
 			include HappyMapper
 			element :name, String
@@ -19,4 +19,4 @@
 			</user>
 		</status>
 		
-		Leads to Status.parse(xml).user.name
+		# leads to Status.parse(xml).user.name
