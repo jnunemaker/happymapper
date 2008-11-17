@@ -28,7 +28,7 @@ class Status
 	element :in_reply_to_status_id, Integer
 	element :in_reply_to_user_id, Integer
 	element :favorited, Boolean
-	element :user, User, :single => true
+	has_one :user, User
 end
 
 statuses = Status.parse(file_contents)

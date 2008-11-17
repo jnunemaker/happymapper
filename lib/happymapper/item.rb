@@ -5,6 +5,10 @@ module HappyMapper
     
     Types = [String, Float, Time, Date, DateTime, Integer, Boolean]
     
+    # options:
+    #   :deep   =>  Boolean False to only parse element's children, True to include
+    #               grandchildren and all others down the chain (// in expath)
+    #   :single =>  Boolean False if object should be collection, True for single object
     def initialize(name, type, o={})
       self.name, self.type, self.tag = name, type, o.delete(:tag) || name.to_s
       self.options = {:single => false, :deep => false}.merge(o)
