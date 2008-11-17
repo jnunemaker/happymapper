@@ -63,23 +63,18 @@ module HappyMapper
         :use_default_namespace => false,
       }.merge(o)
       
+      namespace = "default_ns:" if options[:use_default_namespace]
       doc = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
       
-      nodes = if options[:use_default_namespace]
+      nodes = if namespace
         node = doc.respond_to?(:root) ? doc.root : doc
-        namespace = "default_ns:"
         node.register_default_namespace(namespace.chop)
         node.find("#{namespace}#{get_tag_name}")
       else
         doc.find(get_tag_name)
       end
       
-      collection = nodes.inject([]) do |acc, el|
-        obj = new
-        attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
-        elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el, namespace)) }
-        acc << obj
-      end
+      collection = create_collection(nodes, namespace)
       
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
       nodes = nil
@@ -89,6 +84,15 @@ module HappyMapper
     end
     
     protected
+      def create_collection(nodes, namespace=nil)
+        nodes.inject([]) do |acc, el|
+          obj = new
+          attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
+          elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el, namespace)) }
+          acc << obj
+        end
+      end
+      
       def create_getter(name)
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
