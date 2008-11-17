@@ -6,21 +6,14 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["John Nunemaker"]
-  s.date = %q{2008-11-16}
+  s.date = %q{2008-11-17}
   s.description = %q{object to xml mapping library}
   s.email = ["nunemaker@gmail.com"]
   s.extra_rdoc_files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "TODO.txt"]
-  s.files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "Rakefile", "TODO.txt", "config/hoe.rb", "config/requirements.rb", "examples/post.rb", "examples/twitter.rb", "lib/happymapper.rb", "lib/happymapper/version.rb", "script/console", "script/destroy", "script/generate", "script/txt2html", "setup.rb", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/statuses.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "tasks/deployment.rake", "tasks/environment.rake", "tasks/rspec.rake", "tasks/website.rake", "website/css/common.css", "website/index.html"]
+  s.files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "Rakefile", "TODO.txt", "config/hoe.rb", "config/requirements.rb", "examples/post.rb", "examples/twitter.rb", "happymapper.gemspec", "lib/happymapper.rb", "lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/libxml_ext/libxml_helper.rb", "script/console", "script/destroy", "script/generate", "script/txt2html", "setup.rb", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/statuses.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "tasks/deployment.rake", "tasks/environment.rake", "tasks/rspec.rake", "tasks/website.rake", "website/css/common.css", "website/index.html"]
   s.has_rdoc = true
   s.homepage = %q{http://happymapper.rubyforge.org}
-  s.post_install_message = %q{
-For more information on happymapper, see http://happymapper.rubyforge.org
-
-NOTE: Change this information in PostInstall.txt 
-You can also delete it if you don't want it.
-
-
-}
+  s.post_install_message = %q{}
   s.rdoc_options = ["--main", "README.txt"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{happymapper}

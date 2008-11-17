@@ -9,8 +9,13 @@ config/hoe.rb
 config/requirements.rb
 examples/post.rb
 examples/twitter.rb
+happymapper.gemspec
 lib/happymapper.rb
+lib/happymapper/attribute.rb
+lib/happymapper/element.rb
+lib/happymapper/item.rb
 lib/happymapper/version.rb
+lib/libxml_ext/libxml_helper.rb
 script/console
 script/destroy
 script/generate
