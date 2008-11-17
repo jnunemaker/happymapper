@@ -7,16 +7,11 @@
 		</HTTPHeaders>
 		<RequestId>16WRJBVEM155Q026KCV1</RequestId>
 		<Arguments>
-			<Argument Name="SearchIndex" Value="Books">
-			</Argument>
-			<Argument Name="Service" Value="AWSECommerceService">
-			</Argument>
-			<Argument Name="Title" Value="Ruby on Rails">
-			</Argument>
-			<Argument Name="Operation" Value="ItemSearch">
-			</Argument>
-			<Argument Name="AWSAccessKeyId" Value="dontbeaswoosh">
-			</Argument>
+			<Argument Name="SearchIndex" Value="Books"></Argument>
+			<Argument Name="Service" Value="AWSECommerceService"></Argument>
+			<Argument Name="Title" Value="Ruby on Rails"></Argument>
+			<Argument Name="Operation" Value="ItemSearch"></Argument>
+			<Argument Name="AWSAccessKeyId" Value="dontbeaswoosh"></Argument>
 		</Arguments>
 		<RequestProcessingTime>0.064924955368042</RequestProcessingTime>
 	</OperationRequest>
@@ -32,7 +27,7 @@
 		<TotalPages>3</TotalPages>
 		<Item>
 			<ASIN>0321480791</ASIN>
-		<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+		<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Michael Hartl</Author>
 				<Author>Aurelius Prochazka</Author>
@@ -43,7 +38,7 @@
 		</Item>
 		<Item>
 			<ASIN>047022388X</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=047022388X%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/047022388X%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=047022388X%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/047022388X%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Noel Rappin</Author>
 				<Manufacturer>Wrox</Manufacturer>
@@ -53,7 +48,7 @@
 		</Item>
 		<Item>
 			<ASIN>1590598814</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590598814%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590598814%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590598814%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590598814%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Ola Bini</Author>
 				<Manufacturer>Apress</Manufacturer>
@@ -63,7 +58,7 @@
 		</Item>
 		<Item>
 			<ASIN>0596101325</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0596101325%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0596101325%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0596101325%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0596101325%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Bruce Tate</Author>
 				<Author>Curt Hibbs</Author>
@@ -74,7 +69,7 @@
 		</Item>
 		<Item>
 			<ASIN>0470081201</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0470081201%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0470081201%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0470081201%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0470081201%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Barry Burd</Author>
 				<Manufacturer>For Dummies</Manufacturer>
@@ -84,7 +79,7 @@
 		</Item>
 		<Item>
 			<ASIN>0975841955</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0975841955%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0975841955%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0975841955%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0975841955%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Patrick Lenz</Author>
 				<Manufacturer>SitePoint</Manufacturer>
@@ -94,7 +89,7 @@
 		</Item>
 		<Item>
 			<ASIN>0470069155</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0470069155%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0470069155%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0470069155%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0470069155%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Steve,  Ph.D. Holzner</Author>
 				<Manufacturer>Wrox</Manufacturer>
@@ -104,7 +99,7 @@
 		</Item>
 		<Item>
 			<ASIN>1590597362</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590597362%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590597362%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590597362%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590597362%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Christian Hellsten</Author>
 				<Author>Jarkko Laine</Author>
@@ -115,7 +110,7 @@
 		</Item>
 		<Item>
 			<ASIN>1590597524</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590597524%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590597524%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=1590597524%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/1590597524%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Justin Williams</Author>
 				<Manufacturer>friends of ED</Manufacturer>
@@ -125,7 +120,7 @@
 		</Item>
 		<Item>
 			<ASIN>0321517067</ASIN>
-			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0321517067%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321517067%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2</DetailPageURL>
+			<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0321517067%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321517067%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Aurelius Prochazka</Author>
 				<Manufacturer>Addison-Wesley Professional</Manufacturer>

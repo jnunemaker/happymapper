@@ -37,7 +37,7 @@ class Status
 	element :in_reply_to_status_id, Integer
 	element :in_reply_to_user_id, Integer
 	element :favorited, Boolean
-	element :user, User, :single => true
+	has_one :user, User
 end
 
 module PITA
@@ -47,46 +47,72 @@ module PITA
     tag_name 'Item'
     element :asin, String, :xml_name => 'ASIN'
     element :detail_page_url, String, :xml_name => 'DetailPageURL'
-    element :manufacturer, String, :xml_name => 'Manufacturer'
+    element :manufacturer, String, :xml_name => 'Manufacturer', :deep => true
   end
 
   class Items
     include HappyMapper
-
+    
     tag_name 'Items'
     element :total_results, Integer, :xml_name => 'TotalResults'
     element :total_pages, Integer, :xml_name => 'TotalPages'
-    element :items, Item
+    has_many :items, Item
   end
 end
 
 describe HappyMapper do
   
   describe "being included into another class" do
+    before do
+      Foo.instance_variable_set("@attributes", {})
+      Foo.instance_variable_set("@elements", {})
+    end
     class Foo; include HappyMapper end
     
-    it "should set @attributes to a hash" do
-      Foo.instance_variable_get("@attributes").should == {}
+    it "should set attributes to an array" do
+      Foo.attributes.should == []
     end
     
     it "should set @elements to a hash" do
-      Foo.instance_variable_get("@elements").should == {}
+      Foo.elements.should == []
     end
     
-    it "should provide #attribute" do
-      Foo.should respond_to(:attribute)
+    it "should allow adding an attribute" do
+      lambda {
+        Foo.attribute :name, String
+      }.should change(Foo, :attributes)
     end
     
-    it "should provide #attributes" do
-      Foo.should respond_to(:attributes)
+    it "should be able to get all attributes in array" do
+      Foo.attribute :name, String
+      Foo.attributes.size.should == 1
     end
     
-    it "should provide #element" do
-      Foo.should respond_to(:element)
+    it "should allow adding an element" do
+      lambda {
+        Foo.element :name, String
+      }.should change(Foo, :elements)
     end
     
-    it "should provide #elements" do
-      Foo.should respond_to(:elements)
+    it "should be able to get all elements in array" do
+      Foo.element(:name, String)
+      Foo.elements.size.should == 1
+    end
+    
+    it "should allow has one association" do
+      Foo.has_one(:user, User)
+      element = Foo.elements.first
+      element.name.should == 'user'
+      element.type.should == User
+      element.options[:single] = true
+    end
+    
+    it "should allow has many association" do
+      Foo.has_many(:users, User)
+      element = Foo.elements.first
+      element.name.should == 'users'
+      element.type.should == User
+      element.options[:single] = false
     end
     
     it "should default tag_name to class" do
@@ -171,7 +197,8 @@ describe HappyMapper do
   # TODO: someone please get xml with namespaces working, kthxbai
   describe "#parse (with xml that has namespace)" do
     before do
-      @items = PITA::Items.parse(File.read(File.dirname(__FILE__) + '/fixtures/pita.xml'), :single => true)
+      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/pita.xml')
+      @items = PITA::Items.parse(file_contents, :single => true, :use_default_namespace => true)
     end
     
     it "should properly create objects" do
@@ -179,9 +206,8 @@ describe HappyMapper do
       @items.total_pages.should == 3
       first = @items.items.first
       first.asin.should == '0321480791'
-      first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2'
+      first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
       first.manufacturer.should == 'Addison-Wesley Professional'
     end
-    
   end
 end

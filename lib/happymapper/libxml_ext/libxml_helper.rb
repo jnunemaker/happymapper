@@ -54,13 +54,13 @@ class XML::Node
  
   # provide a name for the default namespace
   def register_default_namespace(name)
-    self.namespace.each do |n|
-      if n.to_s == nil
-        register_namespace("#{name}:#{n.href}")
-        return
-      end
+    default_namespace = namespace.detect { |n| n.to_s == nil }
+    
+    if default_namespace
+      register_namespace("#{name}:#{default_namespace.href}")
+    else
+      raise "No default namespace found"
     end
-    raise "No default namespace found"
   end
  
   # register a namespace, of the form "foo:http://example.com/ns"

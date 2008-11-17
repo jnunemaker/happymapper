@@ -41,6 +41,14 @@ module HappyMapper
       @elements[to_s] || []
     end
     
+    def has_one(name, type, options={})
+      element name, type, {:single => true}.merge(options)
+    end
+    
+    def has_many(name, type, options={})
+      element name, type, {:single => false}.merge(options)
+    end
+    
     def tag_name(new_tag_name)
       @tag_name = new_tag_name.to_s
     end
@@ -70,15 +78,27 @@ module HappyMapper
       create_setter(name)
     end
     
-    def parse(xml, o={})      
-      doc     = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
-      nodes   = doc.find(get_tag_name)
-      options = {:single => false}.merge(o)
+    def parse(xml, o={})
+      options = {
+        :single => false,
+        :use_default_namespace => false,
+      }.merge(o)
+      
+      doc = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
+      
+      nodes = if options[:use_default_namespace]
+        node = doc.respond_to?(:root) ? doc.root : doc
+        namespace = "default_ns:"
+        node.register_default_namespace(namespace.chop)
+        node.find("#{namespace}#{get_tag_name}")
+      else
+        doc.find(get_tag_name)
+      end
       
       collection = nodes.inject([]) do |acc, el|
         obj = new
         attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
-        elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el)) }
+        elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el, namespace)) }
         acc << obj
       end
       
@@ -91,14 +111,14 @@ module HappyMapper
   end
   
   class Item
-    attr_accessor :type, :xml_name
+    attr_accessor :type, :xml_name, :options
     attr_reader :name
     
     Types = [String, Float, Time, Date, DateTime, Integer, Boolean]
     
     def initialize(name, type, o={})
       self.name, self.type, self.xml_name = name, type, o.delete(:xml_name) || name.to_s
-      @options = {:single => false}.merge(o)
+      self.options = {:single => false, :deep => false}.merge(o)
       @xml_type = self.class.to_s.split('::').last.downcase
     end
     
@@ -106,11 +126,12 @@ module HappyMapper
       @name = new_name.to_s
     end
         
-    def from_xml_node(node)
+    def from_xml_node(node, namespace=nil)
       if primitive?
-        typecast(value_from_xml_node(node))
+        typecast(value_from_xml_node(node, namespace))
       else
-        type.parse(node, @options)
+        use_default_namespace = !namespace.nil?
+        type.parse(node, options.merge(:use_default_namespace => use_default_namespace))
       end
     end
     
@@ -157,12 +178,15 @@ module HappyMapper
         end
       end
       
-      def value_from_xml_node(value)
+      def value_from_xml_node(node, namespace=nil)        
+        node.register_default_namespace(namespace.chop) if namespace
+        
         if element?
-          result = value.find_first(xml_name)
+          depth = options[:deep] ? '//' : ''
+          result = node.find_first("#{depth}#{namespace}#{xml_name}")
           result ? result.content : nil
         else
-          value[xml_name]
+          node[xml_name]
         end
       end
   end
