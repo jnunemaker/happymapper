@@ -4,8 +4,11 @@ Manifest.txt
 PostInstall.txt
 README.txt
 Rakefile
+TODO.txt
 config/hoe.rb
 config/requirements.rb
+examples/post.rb
+examples/twitter.rb
 lib/happymapper.rb
 lib/happymapper/version.rb
 script/console
@@ -13,6 +16,12 @@ script/destroy
 script/generate
 script/txt2html
 setup.rb
+spec/fixtures/pita.xml
+spec/fixtures/posts.xml
+spec/fixtures/statuses.xml
+spec/happymapper_attribute_spec.rb
+spec/happymapper_element_spec.rb
+spec/happymapper_item_spec.rb
 spec/happymapper_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
@@ -20,8 +29,5 @@ tasks/deployment.rake
 tasks/environment.rake
 tasks/rspec.rake
 tasks/website.rake
+website/css/common.css
 website/index.html
-website/index.txt
-website/javascripts/rounded_corners_lite.inc.js
-website/stylesheets/screen.css
-website/template.html.erb
