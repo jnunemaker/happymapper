@@ -1,8 +1,12 @@
+directory = File.dirname(__FILE__)
+$:.unshift(directory) unless $:.include?(directory) || $:.include?(File.expand_path(directory))
+
 require 'date'
 require 'time'
 require 'rubygems'
 gem 'libxml-ruby', '>= 0.8.3'
 require 'xml'
+require 'happymapper/libxml_ext/libxml_helper'
 
 class Boolean; end
 
@@ -66,25 +70,21 @@ module HappyMapper
       create_setter(name)
     end
     
-    def parse(xml, o={})
+    def parse(xml, o={})      
+      doc     = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
+      nodes   = doc.find(get_tag_name)
       options = {:single => false}.merge(o)
       
-      if xml.is_a?(LibXML::XML::Node)
-        doc = xml
-      else
-        parser = XML::Parser.new
-        parser.string = xml
-        doc = parser.parse
-      end
-      
-      collection = []
-      
-      doc.find(get_tag_name).each do |el|
+      collection = nodes.inject([]) do |acc, el|
         obj = new
         attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
         elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el)) }
-        collection << obj
+        acc << obj
       end
+      
+      # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
+      nodes = nil
+      GC.start
       
       options[:single] ? collection.first : collection
     end
@@ -105,59 +105,17 @@ module HappyMapper
     def name=(new_name)
       @name = new_name.to_s
     end
-    
-    # el.attributes[a.xml_name]
-    # el.find(e.xml_name).first.content
-    def typecast(value)
-      return value if value.kind_of?(type) || value.nil?
-      begin        
-        if    type == String    then value.to_s
-        elsif type == Float     then value.to_f
-        elsif type == Time      then Time.parse(value.to_s)
-        elsif type == Date      then Date.parse(value.to_s)
-        elsif type == DateTime  then DateTime.parse(value.to_s)
-        elsif type == Boolean   then ['true', 't', '1'].include?(value.to_s.downcase)
-        elsif type == Integer
-          # ganked from datamapper
-          value_to_i = value.to_i
-          if value_to_i == 0 && value != '0'
-            value_to_s = value.to_s
-            begin
-              Integer(value_to_s =~ /^(\d+)/ ? $1 : value_to_s)
-            rescue ArgumentError
-              nil
-            end
-          else
-            value_to_i
-          end
-        else
-          value
-        end
-      rescue
-        value
-      end
-    end
-    
+        
     def from_xml_node(node)
-      if happy_mapper?
+      if primitive?
+        typecast(value_from_xml_node(node))
+      else
         type.parse(node, @options)
-      else
-        value = value_from_xml_node(node)
-        typecast(value)
       end
     end
     
-    def value_from_xml_node(value)
-      value = if element?
-        result = value.find_first(xml_name)
-        result ? result.content : nil
-      else
-        value[xml_name]
-      end
-    end
-    
-    def happy_mapper?
-      !Types.include?(type)
+    def primitive?
+      Types.include?(type)
     end
     
     def element?
@@ -165,8 +123,48 @@ module HappyMapper
     end
     
     def attribute?
-      @xml_type == 'attribute'
+      !element?
     end
+    
+    private
+      def typecast(value)
+        return value if value.kind_of?(type) || value.nil?
+        begin        
+          if    type == String    then value.to_s
+          elsif type == Float     then value.to_f
+          elsif type == Time      then Time.parse(value.to_s)
+          elsif type == Date      then Date.parse(value.to_s)
+          elsif type == DateTime  then DateTime.parse(value.to_s)
+          elsif type == Boolean   then ['true', 't', '1'].include?(value.to_s.downcase)
+          elsif type == Integer
+            # ganked from datamapper
+            value_to_i = value.to_i
+            if value_to_i == 0 && value != '0'
+              value_to_s = value.to_s
+              begin
+                Integer(value_to_s =~ /^(\d+)/ ? $1 : value_to_s)
+              rescue ArgumentError
+                nil
+              end
+            else
+              value_to_i
+            end
+          else
+            value
+          end
+        rescue
+          value
+        end
+      end
+      
+      def value_from_xml_node(value)
+        if element?
+          result = value.find_first(xml_name)
+          result ? result.content : nil
+        else
+          value[xml_name]
+        end
+      end
   end
   
   class Element < Item; end

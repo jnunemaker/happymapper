@@ -126,7 +126,7 @@ describe HappyMapper do
       @posts.size.should == 20
     end
     
-    it "should properly assign attributes" do
+    it "should properly create objects" do
       first = @posts.first
       first.href.should == 'http://roxml.rubyforge.org/'
       first.hash.should == '19bba2ab667be03a19f67fb67dc56917'
@@ -147,15 +147,15 @@ describe HappyMapper do
       @statuses.size.should == 20
     end
     
-    it "should properly assign attributes" do
+    it "should properly create objects" do
       first = @statuses.first
       first.id.should == 882281424
       first.created_at.should == Time.mktime(2008, 8, 9, 1, 38, 12)
       first.source.should == 'web'
-      first.truncated.should == false
+      first.truncated.should be_false
       first.in_reply_to_status_id.should == 1234
       first.in_reply_to_user_id.should == 12345
-      first.favorited.should == false
+      first.favorited.should be_false
       first.user.id.should == 4243
       first.user.name.should == 'John Nunemaker'
       first.user.screen_name.should == 'jnunemaker'
@@ -163,22 +163,24 @@ describe HappyMapper do
       first.user.description.should == 'Loves his wife, ruby, notre dame football and iu basketball'
       first.user.profile_image_url.should == 'http://s3.amazonaws.com/twitter_production/profile_images/53781608/Photo_75_normal.jpg'
       first.user.url.should == 'http://addictedtonew.com'
-      first.user.protected.should == false
+      first.user.protected.should be_false
       first.user.followers_count.should == 486
     end
   end
   
-  describe "#parse (with PITA xml)" do
+  # TODO: someone please get xml with namespaces working, kthxbai
+  describe "#parse (with xml that has namespace)" do
     before do
       @items = PITA::Items.parse(File.read(File.dirname(__FILE__) + '/fixtures/pita.xml'), :single => true)
     end
     
-    it "should properly assign attributes" do
+    it "should properly create objects" do
       @items.total_results.should == 22
       @items.total_pages.should == 3
       first = @items.items.first
       first.asin.should == '0321480791'
       first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2'
+      first.manufacturer.should == 'Addison-Wesley Professional'
     end
     
   end
