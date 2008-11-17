@@ -15,7 +15,9 @@ See examples directory in the gem to get a feel for how it works.
 
 == INSTALL:
 
-* sudo gem install happymapper
+* add github to your sources if you haven't gem sources -a http://gems.github.com
+* sudo gem install jnunemaker-happymapper
+* sudo gem install happymapper (when rubyforge approves and i release there)
 
 == TICKETS:
 
