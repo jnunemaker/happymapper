@@ -12,7 +12,7 @@ class Post
   attribute :extended, String
 end
 
-class User
+class User  
   include HappyMapper
   
   element :id, Integer
@@ -44,18 +44,18 @@ module PITA
   class Item
     include HappyMapper
     
-    tag_name 'Item'
-    element :asin, String, :xml_name => 'ASIN'
-    element :detail_page_url, String, :xml_name => 'DetailPageURL'
-    element :manufacturer, String, :xml_name => 'Manufacturer', :deep => true
+    tag 'Item' # if you put class in module you need tag
+    element :asin, String, :tag => 'ASIN'
+    element :detail_page_url, String, :tag => 'DetailPageURL'
+    element :manufacturer, String, :tag => 'Manufacturer', :deep => true
   end
 
   class Items
     include HappyMapper
     
-    tag_name 'Items'
-    element :total_results, Integer, :xml_name => 'TotalResults'
-    element :total_pages, Integer, :xml_name => 'TotalPages'
+    tag 'Items' # if you put class in module you need tag
+    element :total_results, Integer, :tag => 'TotalResults'
+    element :total_pages, Integer, :tag => 'TotalPages'
     has_many :items, Item
   end
 end
@@ -115,12 +115,12 @@ describe HappyMapper do
       element.options[:single] = false
     end
     
-    it "should default tag_name to class" do
+    it "should default tag name to class" do
       Foo.get_tag_name.should == 'foo'
     end
     
-    it "should allow setting tag_name" do
-      Foo.tag_name('FooBar')
+    it "should allow setting tag name" do
+      Foo.tag('FooBar')
       Foo.get_tag_name.should == 'FooBar'
     end
     

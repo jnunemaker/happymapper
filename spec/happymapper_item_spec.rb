@@ -4,7 +4,7 @@ describe HappyMapper::Item do
   
   describe "new instance" do
     before do
-      @attr = HappyMapper::Item.new(:foo, String, :xml_name => 'foobar')
+      @attr = HappyMapper::Item.new(:foo, String, :tag => 'foobar')
     end
     
     it "should accept a name" do
@@ -15,8 +15,8 @@ describe HappyMapper::Item do
       @attr.type.should == String
     end
     
-    it 'should accept :xml_name as an option' do
-      @attr.xml_name.should == 'foobar'
+    it 'should accept :tag as an option' do
+      @attr.tag.should == 'foobar'
     end
     
     it 'should provide #name' do

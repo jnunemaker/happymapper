@@ -1,5 +1,5 @@
-directory = File.dirname(__FILE__)
-$:.unshift(directory) unless $:.include?(directory) || $:.include?(File.expand_path(directory))
+dir = File.dirname(__FILE__)
+$:.unshift(dir) unless $:.include?(dir) || $:.include?(File.expand_path(dir))
 
 require 'date'
 require 'time'
@@ -49,33 +49,12 @@ module HappyMapper
       element name, type, {:single => false}.merge(options)
     end
     
-    def tag_name(new_tag_name)
+    def tag(new_tag_name)
       @tag_name = new_tag_name.to_s
     end
     
     def get_tag_name
       @tag_name ||= to_s.downcase
-    end
-    
-    def create_getter(name)
-      class_eval <<-EOS, __FILE__, __LINE__
-        def #{name}
-          @#{name}
-        end
-      EOS
-    end
-    
-    def create_setter(name)
-      class_eval <<-EOS, __FILE__, __LINE__
-        def #{name}=(value)
-          @#{name} = value
-        end
-      EOS
-    end
-    
-    def create_accessor(name)
-      create_getter(name)
-      create_setter(name)
     end
     
     def parse(xml, o={})
@@ -108,16 +87,38 @@ module HappyMapper
       
       options[:single] ? collection.first : collection
     end
+    
+    protected
+      def create_getter(name)
+        class_eval <<-EOS, __FILE__, __LINE__
+          def #{name}
+            @#{name}
+          end
+        EOS
+      end
+
+      def create_setter(name)
+        class_eval <<-EOS, __FILE__, __LINE__
+          def #{name}=(value)
+            @#{name} = value
+          end
+        EOS
+      end
+
+      def create_accessor(name)
+        create_getter(name)
+        create_setter(name)
+      end
   end
   
   class Item
-    attr_accessor :type, :xml_name, :options
+    attr_accessor :type, :tag, :options
     attr_reader :name
     
     Types = [String, Float, Time, Date, DateTime, Integer, Boolean]
     
     def initialize(name, type, o={})
-      self.name, self.type, self.xml_name = name, type, o.delete(:xml_name) || name.to_s
+      self.name, self.type, self.tag = name, type, o.delete(:tag) || name.to_s
       self.options = {:single => false, :deep => false}.merge(o)
       @xml_type = self.class.to_s.split('::').last.downcase
     end
@@ -147,46 +148,46 @@ module HappyMapper
       !element?
     end
     
-    private
-      def typecast(value)
-        return value if value.kind_of?(type) || value.nil?
-        begin        
-          if    type == String    then value.to_s
-          elsif type == Float     then value.to_f
-          elsif type == Time      then Time.parse(value.to_s)
-          elsif type == Date      then Date.parse(value.to_s)
-          elsif type == DateTime  then DateTime.parse(value.to_s)
-          elsif type == Boolean   then ['true', 't', '1'].include?(value.to_s.downcase)
-          elsif type == Integer
-            # ganked from datamapper
-            value_to_i = value.to_i
-            if value_to_i == 0 && value != '0'
-              value_to_s = value.to_s
-              begin
-                Integer(value_to_s =~ /^(\d+)/ ? $1 : value_to_s)
-              rescue ArgumentError
-                nil
-              end
-            else
-              value_to_i
+    def typecast(value)
+      return value if value.kind_of?(type) || value.nil?
+      begin        
+        if    type == String    then value.to_s
+        elsif type == Float     then value.to_f
+        elsif type == Time      then Time.parse(value.to_s)
+        elsif type == Date      then Date.parse(value.to_s)
+        elsif type == DateTime  then DateTime.parse(value.to_s)
+        elsif type == Boolean   then ['true', 't', '1'].include?(value.to_s.downcase)
+        elsif type == Integer
+          # ganked from datamapper
+          value_to_i = value.to_i
+          if value_to_i == 0 && value != '0'
+            value_to_s = value.to_s
+            begin
+              Integer(value_to_s =~ /^(\d+)/ ? $1 : value_to_s)
+            rescue ArgumentError
+              nil
             end
           else
-            value
+            value_to_i
           end
-        rescue
+        else
           value
         end
+      rescue
+        value
       end
-      
+    end
+    
+    private      
       def value_from_xml_node(node, namespace=nil)        
         node.register_default_namespace(namespace.chop) if namespace
         
         if element?
           depth = options[:deep] ? '//' : ''
-          result = node.find_first("#{depth}#{namespace}#{xml_name}")
+          result = node.find_first("#{depth}#{namespace}#{tag}")
           result ? result.content : nil
         else
-          node[xml_name]
+          node[tag]
         end
       end
   end
