@@ -2,14 +2,14 @@ require 'happymapper/version'
 
 AUTHOR = 'John Nunemaker'  # can also be an array of Authors
 EMAIL = "nunemaker@gmail.com"
-DESCRIPTION = "description of gem"
+DESCRIPTION = "object to xml mapping library"
 GEM_NAME = 'happymapper' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'happymapper' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
-#  ['activesupport', '>= 1.3.1']
-]    # An array of rubygem dependencies [name, version]
+  ['libxml-ruby', '>= 0.8.3']
+]
 
 @config_file = "~/.rubyforge/user-config.yml"
 @config = nil

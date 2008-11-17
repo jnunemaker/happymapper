@@ -18,8 +18,8 @@ module HappyMapper
   end
   
   module ClassMethods
-    def attribute(name, type)
-      attribute = Attribute.new(name, type)
+    def attribute(name, type, options={})
+      attribute = Attribute.new(name, type, options)
       @attributes[to_s] ||= []
       @attributes[to_s] << attribute
       create_accessor(attribute.name)
@@ -29,8 +29,8 @@ module HappyMapper
       @attributes[to_s] || []
     end
     
-    def element(name, type)
-      element = Element.new(name, type)
+    def element(name, type, options={})
+      element = Element.new(name, type, options)
       @elements[to_s] ||= []
       @elements[to_s] << element
       create_accessor(element.name)
@@ -69,7 +69,9 @@ module HappyMapper
       create_setter(name)
     end
     
-    def parse(xml)
+    def parse(xml, o={})
+      options = {:single => false}.merge(o)
+      
       if xml.is_a?(LibXML::XML::Node)
         doc = xml
       else
@@ -77,14 +79,17 @@ module HappyMapper
         parser.string = xml
         doc = parser.parse
       end
+      
       collection = []
+      
       doc.find(get_tag_name).each do |el|
         obj = new
         attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
         elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el)) }
         collection << obj
       end
-      collection.length == 1 ? collection[0] : collection
+      
+      options[:single] ? collection.first : collection
     end
   end
   
@@ -96,7 +101,7 @@ module HappyMapper
     
     def initialize(name, type, o={})
       self.name, self.type, self.xml_name = name, type, o.delete(:xml_name) || name.to_s
-      @options = {}.merge(o)
+      @options = {:single => false}.merge(o)
       @xml_type = self.class.to_s.split('::').last.downcase
     end
     
@@ -138,7 +143,7 @@ module HappyMapper
     
     def from_xml_node(node)
       if happy_mapper?
-        type.parse(node)
+        type.parse(node, @options)
       else
         value = value_from_xml_node(node)
         typecast(value)
@@ -147,9 +152,10 @@ module HappyMapper
     
     def value_from_xml_node(value)
       value = if element?
-        value.find_first(xml_name).content
+        result = value.find_first(xml_name)
+        result ? result.content : nil
       else
-        value.attributes[xml_name]
+        value[xml_name]
       end
     end
     

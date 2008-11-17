@@ -1,0 +1,22 @@
+* xml with namespace(s) doesn't work
+* the whole should something be a attribute or a collection is awkward
+		ie: should user be an array or not, right now i'm assuming it's always an array
+		unless you pass :single => true with a happy mapper class
+		class User
+			include HappyMapper
+			element :name, String
+		end
+		
+		class Status
+			include HappyMapper
+			element :user, User, :single => true
+		end
+		
+		<status>
+			<text>Foobar!</text>
+			<user>
+				<name>John Nunemaker</name>
+			</user>
+		</status>
+		
+		Leads to Status.parse(xml).user.name

@@ -37,7 +37,27 @@ class Status
 	element :in_reply_to_status_id, Integer
 	element :in_reply_to_user_id, Integer
 	element :favorited, Boolean
-	element :user, User
+	element :user, User, :single => true
+end
+
+module PITA
+  class Item
+    include HappyMapper
+    
+    tag_name 'Item'
+    element :asin, String, :xml_name => 'ASIN'
+    element :detail_page_url, String, :xml_name => 'DetailPageURL'
+    element :manufacturer, String, :xml_name => 'Manufacturer'
+  end
+
+  class Items
+    include HappyMapper
+
+    tag_name 'Items'
+    element :total_results, Integer, :xml_name => 'TotalResults'
+    element :total_pages, Integer, :xml_name => 'TotalPages'
+    element :items, Item
+  end
 end
 
 describe HappyMapper do
@@ -97,7 +117,7 @@ describe HappyMapper do
     end
   end
   
-  describe "#parse (with attribute heavy xml)" do
+  describe "#parse (with xml attributes mapping to ruby attributes)" do
     before do
       @posts = Post.parse(File.read(File.dirname(__FILE__) + '/fixtures/posts.xml'))
     end
@@ -118,7 +138,7 @@ describe HappyMapper do
     end
   end
   
-  describe "#parse (with element heavy xml)" do
+  describe "#parse (with xml elements mapping to ruby attributes)" do
     before do
       @statuses = Status.parse(File.read(File.dirname(__FILE__) + '/fixtures/statuses.xml'))
     end
@@ -146,5 +166,20 @@ describe HappyMapper do
       first.user.protected.should == false
       first.user.followers_count.should == 486
     end
+  end
+  
+  describe "#parse (with PITA xml)" do
+    before do
+      @items = PITA::Items.parse(File.read(File.dirname(__FILE__) + '/fixtures/pita.xml'), :single => true)
+    end
+    
+    it "should properly assign attributes" do
+      @items.total_results.should == 22
+      @items.total_pages.should == 3
+      first = @items.items.first
+      first.asin.should == '0321480791'
+      first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=13BGQE8Q6AKCRYPHG0G2'
+    end
+    
   end
 end
