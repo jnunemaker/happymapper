@@ -176,7 +176,7 @@ describe HappyMapper do
     it "should properly create objects" do
       first = @statuses.first
       first.id.should == 882281424
-      first.created_at.should == Time.mktime(2008, 8, 9, 1, 38, 12)
+      first.created_at.should == Time.utc(2008, 8, 9, 5, 38, 12)
       first.source.should == 'web'
       first.truncated.should be_false
       first.in_reply_to_status_id.should == 1234
