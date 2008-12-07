@@ -204,10 +204,13 @@ describe HappyMapper do
     it "should properly create objects" do
       @items.total_results.should == 22
       @items.total_pages.should == 3
-      first = @items.items.first
+      first  = @items.items[0]
+      second = @items.items[1]
       first.asin.should == '0321480791'
       first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
       first.manufacturer.should == 'Addison-Wesley Professional'
+      second.asin.should == '047022388X'
+      second.manufacturer.should == 'Wrox'
     end
   end
 end
