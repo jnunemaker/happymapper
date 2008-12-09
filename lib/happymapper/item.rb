@@ -75,7 +75,7 @@ module HappyMapper
         node.register_default_namespace(namespace.chop) if namespace
         
         if element?
-          depth = options[:deep] ? '//' : ''
+          depth = options[:deep] ? './/' : ''
           result = node.find_first("#{depth}#{namespace}#{tag}")
           result ? result.content : nil
         else
