@@ -69,6 +69,16 @@ module PITA
   end
 end
 
+class Address
+  include HappyMapper
+
+  element :street, String
+  element :postcode, String
+  element :housenumber, String
+  element :city, String
+  element :country, String
+end
+
 describe HappyMapper do
   
   describe "being included into another class" do
@@ -200,6 +210,21 @@ describe HappyMapper do
       first.user.url.should == 'http://addictedtonew.com'
       first.user.protected.should be_false
       first.user.followers_count.should == 486
+    end
+  end
+
+  describe "#parse (with xml containing the desired element as root node)" do
+    before do
+      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/address.xml')
+      @address = Address.parse(file_contents, :single => true)
+    end
+
+    it "should properly create objects" do
+      @address.street.should == 'Milchstrasse'
+      @address.postcode.should == '26131'
+      @address.housenumber.should == '23'
+      @address.city.should == 'Oldenburg'
+      @address.country.should == 'Germany'
     end
   end
   

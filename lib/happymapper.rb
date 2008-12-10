@@ -73,7 +73,7 @@ module HappyMapper
         node.register_default_namespace(namespace.chop)
         node.find("#{namespace}#{get_tag_name}")
       else
-        doc.find(get_tag_name)
+        doc.find("//#{get_tag_name}")
       end
       
       collection = create_collection(nodes, namespace)
