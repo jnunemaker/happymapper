@@ -176,7 +176,7 @@ describe HappyMapper do
     it "should properly create objects" do
       first = @statuses.first
       first.id.should == 882281424
-      first.created_at.should == Time.mktime(2008, 8, 9, 1, 38, 12)
+      first.created_at.should == Time.utc(2008, 8, 9, 5, 38, 12)
       first.source.should == 'web'
       first.truncated.should be_false
       first.in_reply_to_status_id.should == 1234
@@ -204,10 +204,13 @@ describe HappyMapper do
     it "should properly create objects" do
       @items.total_results.should == 22
       @items.total_pages.should == 3
-      first = @items.items.first
+      first  = @items.items[0]
+      second = @items.items[1]
       first.asin.should == '0321480791'
       first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
       first.manufacturer.should == 'Addison-Wesley Professional'
+      second.asin.should == '047022388X'
+      second.manufacturer.should == 'Wrox'
     end
   end
 end
