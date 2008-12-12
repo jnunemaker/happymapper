@@ -1,3 +1,7 @@
+== 0.1.2 2008-12-12
+* 1 major enhancement:
+  * Fixed that :deep only worked for first item (dvrensk)
+  
 == 0.1.0 2008-11-16
 
 * 1 major enhancement:
