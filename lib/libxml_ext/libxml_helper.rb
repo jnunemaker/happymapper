@@ -54,7 +54,7 @@ class XML::Node
  
   # provide a name for the default namespace
   def register_default_namespace(name)
-    default_namespace = namespace.detect { |n| n.to_s == nil }
+    default_namespace = namespaces.default
     
     if default_namespace
       register_namespace("#{name}:#{default_namespace.href}")
