@@ -19,7 +19,7 @@ module HappyMapper
       @name = new_name.to_s
     end
         
-    def from_xml_node(node, namespace=nil)
+    def from_xml_node(node, namespace)
       if primitive?
         typecast(value_from_xml_node(node, namespace))
       else
@@ -40,7 +40,12 @@ module HappyMapper
       !element?
     end
     
-    def typecast(value)
+    def typecast(*args)
+      args.flatten!
+      value = args.shift
+      if options[:attributes]
+        options[:attributes].each {|attr| }
+      end
       return value if value.kind_of?(type) || value.nil?
       begin        
         if    type == String    then value.to_s
@@ -77,7 +82,7 @@ module HappyMapper
         if element?
           depth = options[:deep] ? './/' : ''
           result = node.find_first("#{depth}#{namespace}#{tag}")
-          result ? result.content : nil
+          return result ? [result.content, result.attributes] : nil
         else
           node[tag]
         end
