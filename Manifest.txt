@@ -8,6 +8,7 @@ TODO.txt
 config/hoe.rb
 config/requirements.rb
 examples/amazon.rb
+examples/current_weather.rb
 examples/post.rb
 examples/twitter.rb
 happymapper.gemspec
@@ -22,6 +23,7 @@ script/destroy
 script/generate
 script/txt2html
 setup.rb
+spec/fixtures/current_weather.xml
 spec/fixtures/pita.xml
 spec/fixtures/posts.xml
 spec/fixtures/statuses.xml
