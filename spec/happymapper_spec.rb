@@ -40,6 +40,15 @@ class Status
 	has_one :user, User
 end
 
+class CurrentWeather
+  include HappyMapper
+  tag 'aws:ob'
+  element :temperature, Integer, :tag => 'aws:temp'
+  element :feels_like, Integer, :tag => 'aws:feels-like'
+  element :current_condition, String, :tag => 'aws:current-condition', :attributes => {:icon => String}
+end
+
+
 module PITA
   class Item
     include HappyMapper
@@ -211,6 +220,21 @@ describe HappyMapper do
       first.manufacturer.should == 'Addison-Wesley Professional'
       second.asin.should == '047022388X'
       second.manufacturer.should == 'Wrox'
+    end
+  end
+
+  describe "#parse (with xml that has attributes of elements)" do
+    before do
+      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/current_weather.xml')
+      @items = CurrentWeather.parse(file_contents)
+    end
+    
+    it "should properly create objects" do
+      @first = @items[0]
+      @first.temperature.should == 51
+      @first.feels_like.should == 51
+      @first.current_condition.should == 'Sunny'
+      @first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
     end
   end
 end

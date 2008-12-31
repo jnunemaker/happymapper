@@ -19,9 +19,11 @@ module HappyMapper
       @name = new_name.to_s
     end
         
-    def from_xml_node(node, namespace)
+    def from_xml_node(node, namespace = nil)
       if primitive?
-        typecast(value_from_xml_node(node, namespace))
+        value_from_xml_node(node, namespace) do |value_before_type_cast|
+          typecast(value_before_type_cast)
+        end
       else
         use_default_namespace = !namespace.nil?
         type.parse(node, options.merge(:use_default_namespace => use_default_namespace))
@@ -40,12 +42,7 @@ module HappyMapper
       !element?
     end
     
-    def typecast(*args)
-      args.flatten!
-      value = args.shift
-      if options[:attributes]
-        options[:attributes].each {|attr| }
-      end
+    def typecast(value)
       return value if value.kind_of?(type) || value.nil?
       begin        
         if    type == String    then value.to_s
@@ -82,9 +79,26 @@ module HappyMapper
         if element?
           depth = options[:deep] ? './/' : ''
           result = node.find_first("#{depth}#{namespace}#{tag}")
-          return result ? [result.content, result.attributes] : nil
+          if result
+            value = yield(result.content)
+            if options[:attributes].is_a?(Hash)
+              result.attributes.each do |xml_attribute|
+                if attribute_options = options[:attributes][xml_attribute.name.to_sym]
+                  attribute_value = Attribute.new(xml_attribute.name.to_sym, *attribute_options).from_xml_node(result)
+                  result.instance_eval <<-EOV
+                    def value.#{xml_attribute.name}
+                      #{attribute_value.inspect}
+                    end
+                  EOV
+                end
+              end
+            end
+            value
+          else
+            nil
+          end
         else
-          node[tag]
+          yield(node[tag])
         end
       end
   end
