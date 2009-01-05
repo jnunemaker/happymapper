@@ -48,6 +48,15 @@ class CurrentWeather
   element :current_condition, String, :tag => 'aws:current-condition', :attributes => {:icon => String}
 end
 
+class Address
+  include HappyMapper
+  
+  element :street, String
+  element :postcode, String
+  element :housenumber, String
+  element :city, String
+  element :country, String
+end
 
 module PITA
   class Item
@@ -67,16 +76,6 @@ module PITA
     element :total_pages, Integer, :tag => 'TotalPages'
     has_many :items, Item
   end
-end
-
-class Address
-  include HappyMapper
-
-  element :street, String
-  element :postcode, String
-  element :housenumber, String
-  element :city, String
-  element :country, String
 end
 
 describe HappyMapper do

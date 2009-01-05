@@ -23,6 +23,7 @@ script/destroy
 script/generate
 script/txt2html
 setup.rb
+spec/fixtures/address.xml
 spec/fixtures/current_weather.xml
 spec/fixtures/pita.xml
 spec/fixtures/posts.xml
