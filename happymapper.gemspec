@@ -5,12 +5,12 @@ Gem::Specification.new do |s|
   s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["John Nunemaker", "Jeremy Friesen"]
-  s.date = %q{2008-12-28}
+  s.authors = ["John Nunemaker"]
+  s.date = %q{2009-01-04}
   s.description = %q{object to xml mapping library}
   s.email = ["nunemaker@gmail.com"]
   s.extra_rdoc_files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "TODO.txt"]
-  s.files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "Rakefile", "TODO.txt", "config/hoe.rb", "config/requirements.rb", "examples/amazon.rb", "examples/post.rb", "examples/twitter.rb", "examples/current_weather.rb" "happymapper.gemspec", "lib/happymapper.rb", "lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/libxml_ext/libxml_helper.rb", "script/console", "script/destroy", "script/generate", "script/txt2html", "setup.rb", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/statuses.xml", "spec/fixtures/current_weather.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "tasks/deployment.rake", "tasks/environment.rake", "tasks/rspec.rake", "tasks/website.rake", "website/css/common.css", "website/index.html"]
+  s.files = ["History.txt", "License.txt", "Manifest.txt", "PostInstall.txt", "README.txt", "Rakefile", "TODO.txt", "config/hoe.rb", "config/requirements.rb", "examples/amazon.rb", "examples/current_weather.rb", "examples/post.rb", "examples/twitter.rb", "happymapper.gemspec", "lib/happymapper.rb", "lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/libxml_ext/libxml_helper.rb", "script/console", "script/destroy", "script/generate", "script/txt2html", "setup.rb", "spec/fixtures/current_weather.xml", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/statuses.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "tasks/deployment.rake", "tasks/environment.rake", "tasks/rspec.rake", "tasks/website.rake", "website/css/common.css", "website/index.html"]
   s.has_rdoc = true
   s.homepage = %q{http://happymapper.rubyforge.org}
   s.post_install_message = %q{}
