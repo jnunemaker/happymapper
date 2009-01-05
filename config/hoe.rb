@@ -8,7 +8,7 @@ RUBYFORGE_PROJECT = 'happymapper' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 EXTRA_DEPENDENCIES = [
-  ['libxml-ruby', '>= 0.8.3']
+  ['libxml-ruby', '>= 0.9.7']
 ]
 
 @config_file = "~/.rubyforge/user-config.yml"
