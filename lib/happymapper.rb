@@ -75,7 +75,17 @@ module HappyMapper
       else
         doc.find("//#{get_tag_name}")
       end
-      
+
+      nodes = if namespace
+        node = doc.respond_to?(:root) ? doc.root : doc
+        node.register_default_namespace(namespace.chop)
+        node.find("#{namespace}#{get_tag_name}")
+      else
+        nested = '.' unless doc.respond_to?(:root)
+        path = "#{nested}//#{get_tag_name}"
+        doc.find(path)
+      end
+
       collection = create_collection(nodes, namespace)
       
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354

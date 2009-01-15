@@ -1,5 +1,16 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
+class Place
+  include HappyMapper
+
+  element :name, String
+end
+
+class Radar
+  include HappyMapper
+  has_many :places, Place
+end
+
 class Post
   include HappyMapper
   
@@ -259,6 +270,25 @@ describe HappyMapper do
       @first.feels_like.should == 51
       @first.current_condition.should == 'Sunny'
       @first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
+    end
+  end
+
+  describe "#parse (with xml that has nested elements)" do
+    before do
+      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/radar.xml')
+      @radars = Radar.parse(file_contents)
+    end
+
+    it "should properly create objects" do
+      @first = @radars[0]
+      @first.places.count.should == 1
+      @first.places[0].name.should == 'Store'
+      @second = @radars[1]
+      @second.places.count.should == 0
+      @third = @radars[2]
+      @third.places.count.should == 2
+      @third.places[0].name.should == 'Work'
+      @third.places[1].name.should == 'Home'
     end
   end
 end
