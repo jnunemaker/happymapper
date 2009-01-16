@@ -52,22 +52,6 @@ class XML::Node
     self.path
   end
  
-  # provide a name for the default namespace
-  def register_default_namespace(name)
-    default_namespace = namespaces.default
-    
-    if default_namespace
-      register_namespace("#{name}:#{default_namespace.href}")
-    else
-      raise "No default namespace found"
-    end
-  end
- 
-  # register a namespace, of the form "foo:http://example.com/ns"
-  def register_namespace(name_and_href)
-    (@default_namespaces ||= []) << name_and_href
-  end
- 
   def find_with_default_ns(xpath_expr, namespace=nil)
     find_base(xpath_expr, namespace || default_namespaces)
   end

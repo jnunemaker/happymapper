@@ -74,7 +74,6 @@ module HappyMapper
     
     private      
       def value_from_xml_node(node, namespace=nil)        
-        node.register_default_namespace(namespace.chop) if namespace
         
         if element?
           depth = options[:deep] ? './/' : ''
