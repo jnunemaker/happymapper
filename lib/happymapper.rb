@@ -63,58 +63,15 @@ module HappyMapper
       options = {
         :single => false,
         :use_default_namespace => false,
-        :use_slash => nil,
       }.merge(o)
       
+      namespace = "default_ns:" if options[:use_default_namespace]
       doc = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
-      
-      # doc.root.namespaces.count == 0 'no namespaces supplied'
-      # doc.root.namespaces.default != nil 'default namespace supplied/available'
-      # doc.root.namespaces.each { |ns| ns.to_s } 'list namespaces'
-      # doc.root.namespaces.namespace.prefix 'get the prefix (no colon) for a namespace'
-      # doc.root.namespaces.namespace.href 'get the URI for a namespace'
-      
-      if doc.is_a?(LibXML::XML::Document) 
-      
-        # turn off ':use_default_namespace' option if doc doesn't have a default namespace
-        if options[:use_default_namespace] && doc.root.namespaces.default.nil? 
-          warn ":use_default_namespace specified but XML has no default namespace, option ignored"
-          options[:use_default_namespace] = namespace = nil 
-        end
-        
-        # if doc has a default namespace, turn on ':use_default_namespace' & set default_prefix for LibXML
-        unless doc.root.namespaces.default.nil?
-          options[:use_default_namespace] = true 
-          namespace = "happymapper_ns:" 
-          doc.root.namespaces.default_prefix = namespace.chop 
-        end
-        
-        # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML)
-        if doc.root.namespaces.count > 0 && namespace.nil? && !doc.root.namespaces.namespace.nil?
-          namespace = doc.root.namespaces.namespace.prefix + ":" 
-        end
-        
-      end
-      
-      if doc.is_a?(LibXML::XML::Node)
-      
-        # if doc has a default namespace, turn on ':use_default_namespace' & set default_prefix
-        unless doc.namespaces.default.nil?
-          options[:use_default_namespace] = true 
-          namespace = "happymapper_ns:" 
-          doc.namespaces.default_prefix = namespace.chop
-        end
-        
-        # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML) 
-        if doc.namespaces.count > 0 && namespace.nil? && !doc.namespaces.namespace.nil?
-          namespace = doc.namespaces.namespace.prefix + ":" 
-        end
-        
-      end
       
       nodes = if namespace
         node = doc.respond_to?(:root) ? doc.root : doc
-        node.find("#{options[:use_slash]}#{namespace}#{get_tag_name}")
+        node.register_default_namespace(namespace.chop)
+        node.find("#{namespace}#{get_tag_name}")
       else
         doc.find("//#{get_tag_name}")
       end
