@@ -281,12 +281,12 @@ describe HappyMapper do
 
     it "should properly create objects" do
       @first = @radars[0]
-      @first.places.count.should == 1
+      @first.places.size.should == 1
       @first.places[0].name.should == 'Store'
       @second = @radars[1]
-      @second.places.count.should == 0
+      @second.places.size.should == 0
       @third = @radars[2]
-      @third.places.count.should == 2
+      @third.places.size.should == 2
       @third.places[0].name.should == 'Work'
       @third.places[1].name.should == 'Home'
     end
