@@ -99,13 +99,15 @@ module HappyMapper
       def create_collection(nodes, namespace=nil)
         nodes.inject([]) do |acc, el|
           obj = new
-          attributes.each { |attr| obj.send("#{attr.name}=", attr.from_xml_node(el)) }
-          elements.each   { |elem| obj.send("#{elem.name}=", elem.from_xml_node(el, namespace)) }
+          attributes.each { |attr| obj.send("#{normalize_name attr.name}=", attr.from_xml_node(el)) }
+          elements.each   { |elem| obj.send("#{normalize_name elem.name}=", elem.from_xml_node(el, namespace)) }
           acc << obj
         end
       end
       
       def create_getter(name)
+        name = normalize_name(name)
+
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}
             @#{name}
@@ -114,6 +116,8 @@ module HappyMapper
       end
 
       def create_setter(name)
+        name = normalize_name(name)
+
         class_eval <<-EOS, __FILE__, __LINE__
           def #{name}=(value)
             @#{name} = value
@@ -122,8 +126,14 @@ module HappyMapper
       end
 
       def create_accessor(name)
+        name = normalize_name(name)
+
         create_getter(name)
         create_setter(name)
+      end
+
+      def normalize_name(name)
+        name.gsub('-', '_')
       end
   end
 end

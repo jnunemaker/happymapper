@@ -89,6 +89,20 @@ module PITA
   end
 end
 
+module GitHub
+  class Commit
+    include HappyMapper
+
+    tag "commit"
+
+    element :url, String
+    element :tree, String
+    element :message, String
+    element :id, String
+    element :'committed-date', Date
+  end
+end
+
 describe HappyMapper do
   
   describe "being included into another class" do
@@ -112,6 +126,12 @@ describe HappyMapper do
       }.should change(Foo, :attributes)
     end
     
+    it "should allow adding an attribute containing a dash" do
+      lambda {
+        Foo.attribute :'bar-baz', String
+      }.should change(Foo, :attributes)
+    end
+
     it "should be able to get all attributes in array" do
       Foo.attribute :name, String
       Foo.attributes.size.should == 1
@@ -121,6 +141,13 @@ describe HappyMapper do
       lambda {
         Foo.element :name, String
       }.should change(Foo, :elements)
+    end
+
+    it "should allow adding an element containing a dash" do
+      lambda {
+        Foo.element :'bar-baz', String
+      }.should change(Foo, :elements)
+
     end
     
     it "should be able to get all elements in array" do
@@ -290,5 +317,21 @@ describe HappyMapper do
       @third.places[0].name.should == 'Work'
       @third.places[1].name.should == 'Home'
     end
+  end
+
+  describe "#parse (with xml that has elements with dashes in them)" do
+    before do
+      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/commit.xml')
+      @commit = GitHub::Commit.parse(file_contents).first
+    end
+
+    it "should properly create objects" do
+      @commit.message.should == "move commands.rb and helpers.rb into commands/ dir"
+      @commit.url.should == "http://github.com/defunkt/github-gem/commit/c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
+      @commit.id.should == "c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
+      @commit.committed_date.should == Date.parse("2008-03-02T16:45:41-08:00")
+      @commit.tree.should == "28a1a1ca3e663d35ba8bf07d3f1781af71359b76"
+    end
+
   end
 end
