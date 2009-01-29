@@ -51,6 +51,7 @@ module FedEx
     include HappyMapper
     
     tag 'Address'
+    namespace 'v2'
     element :city, String, :tag => 'City'
     element :state, String, :tag => 'StateOrProvinceCode'
     element :zip, String, :tag => 'PostalCode'
@@ -62,6 +63,7 @@ module FedEx
     include HappyMapper
     
     tag 'Events'
+    namespace 'v2'
     element :timestamp, String, :tag => 'Timestamp'
     element :eventtype, String, :tag => 'EventType'
     element :eventdescription, String, :tag => 'EventDescription'
@@ -72,6 +74,7 @@ module FedEx
     include HappyMapper
     
     tag 'PackageWeight'
+    namespace 'v2'
     element :units, String, :tag => 'Units'
     element :value, Integer, :tag => 'Value'
   end
@@ -80,6 +83,7 @@ module FedEx
     include HappyMapper
     
     tag 'TrackDetails'
+    namespace 'v2'
     element   :tracking_number, String, :tag => 'TrackingNumber'
     element   :status_code, String, :tag => 'StatusCode'
     element   :status_desc, String, :tag => 'StatusDescription'
@@ -94,6 +98,7 @@ module FedEx
     include HappyMapper
     
     tag 'Notifications'
+    namespace 'v2'
     element :severity, String, :tag => 'Severity'
     element :source, String, :tag => 'Source'
     element :code, Integer, :tag => 'Code'
@@ -105,6 +110,7 @@ module FedEx
     include HappyMapper
     
     tag 'TransactionDetail'
+    namespace 'v2'
     element :cust_tran_id, String, :tag => 'CustomerTransactionId'
   end
   
@@ -112,6 +118,7 @@ module FedEx
     include HappyMapper
     
     tag 'TrackReply', :root => true
+    namespace 'v2'
     element   :highest_severity, String, :tag => 'HighestSeverity'
     element   :more_data, Boolean, :tag => 'MoreData'
     has_many  :notifications, Notification, :tag => 'Notifications'
@@ -167,6 +174,7 @@ class Status
 	element :in_reply_to_status_id, Integer
 	element :in_reply_to_user_id, Integer
 	element :favorited, Boolean
+	element :non_existent, String, :tag => 'dummy', :namespace => 'fake'
 	has_one :user, User
 end
 
@@ -174,6 +182,7 @@ class CurrentWeather
   include HappyMapper
   
   tag 'ob'
+  namespace 'aws'
   element :temperature, Integer, :tag => 'temp'
   element :feels_like, Integer, :tag => 'feels-like'
   element :current_condition, String, :tag => 'current-condition', :attributes => {:icon => String}
@@ -198,6 +207,7 @@ module PITA
     element :asin, String, :tag => 'ASIN'
     element :detail_page_url, String, :tag => 'DetailPageURL'
     element :manufacturer, String, :tag => 'Manufacturer', :deep => true
+    element :point, String, :tag => 'point', :namespace => 'georss'
   end
 
   class Items
@@ -290,7 +300,7 @@ describe HappyMapper do
       element.type.should == User
       element.options[:single] = false
     end
-    
+
     it "should default tag name to lowercase class" do
       Foo.get_tag_name.should == 'foo'
     end
@@ -305,6 +315,11 @@ describe HappyMapper do
       Foo.get_tag_name.should == 'FooBar'
     end
     
+    it "should allow setting a namespace" do
+      Foo.namespace(namespace = "foo")
+      Foo.namespace.should == namespace
+    end
+
     it "should provide #parse" do
       Foo.should respond_to(:parse)
     end
@@ -320,7 +335,7 @@ describe HappyMapper do
   describe "#elements" do
     it "should only return elements for the current class" do
       Post.elements.size.should == 0
-      Status.elements.size.should == 9
+      Status.elements.size.should == 10
     end
   end
   
@@ -376,6 +391,7 @@ describe HappyMapper do
     first  = items.items[0]
     second = items.items[1]
     first.asin.should == '0321480791'
+    first.point.should == '38.5351715088 -121.7948684692'
     first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
     first.manufacturer.should == 'Addison-Wesley Professional'
     second.asin.should == '047022388X'

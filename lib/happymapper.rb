@@ -13,7 +13,9 @@ require 'libxml_ext/libxml_helper'
 class Boolean; end
 
 module HappyMapper
-  
+
+  DEFAULT_NS = "happymapper"
+
   def self.included(base)
     base.instance_variable_set("@attributes", {})
     base.instance_variable_set("@elements", {})
@@ -50,7 +52,15 @@ module HappyMapper
     def has_many(name, type, options={})
       element name, type, {:single => false}.merge(options)
     end
-    
+
+    # Specify a namespace if a node and all its children are all namespaced
+    # elements. This is simpler than passing the :namespace option to each
+    # defined element.
+    def namespace(namespace = nil)
+      @namespace = namespace if namespace
+      @namespace
+    end
+
     # Options:
     #   :root => Boolean, true means this is xml root
     def tag(new_tag_name, o={})
@@ -71,24 +81,30 @@ module HappyMapper
     
     def parse(xml, o={})      
       xpath, collection, options = '', [], {:single => false}.merge(o)
-      doc   = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
-      node  = doc.respond_to?(:root) ? doc.root : doc
-      
-      # puts doc.inspect, doc.respond_to?(:root) ? doc.root.inspect : ''
-      
-      unless node.namespaces.default.nil?
-        namespace = "default_ns:" 
-        node.namespaces.default_prefix = namespace.chop
-        # warn "Default XML namespace present -- results are unpredictable" 
+
+      # reset the namespace if it was set to the default
+      # this is necessary when using the same object mapping instance for
+      # docs w/ and w/o default namespaces
+      @namespace = nil if @namespace == DEFAULT_NS
+
+      if xml.is_a?(XML::Node)
+        node = xml
+      elsif xml.is_a?(XML::Document)
+        node = xml.root
+      else
+        node = xml.to_libxml_doc.root
       end
-      
-      if node.namespaces.to_a.size > 0 && namespace.nil? && !node.namespaces.namespace.nil?
-        namespace = node.namespaces.namespace.prefix + ":" 
+
+      # This is the entry point into the parsing pipeline, so the default
+      # namespace prefix registered here will propagate down
+      namespaces = node.namespaces
+      if namespaces && namespaces.default
+        namespaces.default_prefix = DEFAULT_NS
+        @namespace ||= DEFAULT_NS
       end
-      
-      # xpath += doc.respond_to?(:root) ? '' : '.'
+
       xpath += is_root? ? '/' : './/'
-      xpath += namespace  if namespace
+      xpath += "#{namespace}:" if namespace
       xpath += get_tag_name
       # puts "parse: #{xpath}"
       
@@ -102,7 +118,7 @@ module HappyMapper
         end
         
         elements.each do |elem|
-          elem.namespace = namespace
+          elem.namespace ||= namespace
           obj.send("#{elem.method_name}=", 
                     elem.from_xml_node(n))
         end

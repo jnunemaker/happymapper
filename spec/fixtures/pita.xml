@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ItemSearchResponse xmlns="http://webservices.amazon.com/AWSECommerceService/2005-10-05">
+<ItemSearchResponse xmlns="http://webservices.amazon.com/AWSECommerceService/2005-10-05" xmlns:georss="http://www.georss.org/georss">
 	<OperationRequest>
 		<HTTPHeaders>
 			<Header Name="UserAgent">
@@ -27,6 +27,7 @@
 		<TotalPages>3</TotalPages>
 		<Item>
 			<ASIN>0321480791</ASIN>
+			<georss:point>38.5351715088 -121.7948684692</georss:point>
 		<DetailPageURL>http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh</DetailPageURL>
 			<ItemAttributes>
 				<Author>Michael Hartl</Author>

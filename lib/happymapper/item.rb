@@ -7,11 +7,15 @@ module HappyMapper
     # options:
     #   :deep   =>  Boolean False to only parse element's children, True to include
     #               grandchildren and all others down the chain (// in expath)
+    #   :namespace => String Element's namespace if it's not the global or inherited
+    #                  default
     #   :single =>  Boolean False if object should be collection, True for single object
+    #   :tag    =>  String Element name if it doesn't match the specified name.
     def initialize(name, type, o={})
       self.name = name.to_s
       self.type = type
       self.tag = o.delete(:tag) || name.to_s
+      self.namespace = o[:namespace]
       self.options = {
         :single => false, 
         :deep   => false,
@@ -33,7 +37,7 @@ module HappyMapper
     def xpath
       xpath  = ''
       xpath += './/' if options[:deep]
-      xpath += namespace if namespace
+      xpath += "#{namespace}:" if namespace
       xpath += tag
       # puts "xpath: #{xpath}"
       xpath
@@ -87,6 +91,11 @@ module HappyMapper
     
     private
       def value_from_xml_node(node)
+        # this node has a custom namespace (that is present in the doc)
+        if namespace && !node.namespaces.find_by_prefix(namespace)
+          self.namespace = nil
+        end
+
         if element?
           result = node.find_first(xpath)
           # puts "vfxn: #{xpath} #{result.inspect}"
