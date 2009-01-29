@@ -1,3 +1,7 @@
+== 0.2.0
+* 1 major enhancement
+  * Automatic handling of namespaces (part by Robert Lowrey and rest by John Nunemaker)
+  
 == 0.1.7 2009-01-29
 * 1 minor enhancement
   * Support dashes in elements (Josh Nichols)

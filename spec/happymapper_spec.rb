@@ -3,7 +3,7 @@ require 'pp'
 
 class Feature
   include HappyMapper
-  element :name, String, :tag => '.'
+  element :name, String, :tag => '.|.//text()'
 end
 
 class FeatureBullet
@@ -384,17 +384,16 @@ describe HappyMapper do
   
   it "should parse xml with no namespace" do
     product = Product.parse(fixture_file('product_no_namespace.xml'), :single => true)
-    product.title.should == " A Title"
+    product.title.should == "A Title"
     product.feature_bullets.bug.should == 'This is a bug'
     product.feature_bullets.features.size.should == 2
     product.feature_bullets.features[0].name.should == 'This is feature text 1'
     product.feature_bullets.features[1].name.should == 'This is feature text 2'
   end
   
-  xit "should parse xml with default namespace" do
+  it "should parse xml with default namespace" do
     product = Product.parse(fixture_file('product_default_namespace.xml'), :single => true)
-    # pp product
-    product.title.should == " A Title"
+    product.title.should == "A Title"
     product.feature_bullets.bug.should == 'This is a bug'
     product.feature_bullets.features.size.should == 2
     product.feature_bullets.features[0].name.should == 'This is feature text 1'
@@ -403,7 +402,7 @@ describe HappyMapper do
   
   it "should parse xml with single namespace" do
     product = Product.parse(fixture_file('product_single_namespace.xml'), :single => true)
-    product.title.should == " A Title"
+    product.title.should == "A Title"
     product.feature_bullets.bug.should == 'This is a bug'
     product.feature_bullets.features.size.should == 2
     product.feature_bullets.features[0].name.should == 'This is feature text 1'

@@ -25,7 +25,7 @@ module HappyMapper
       attribute = Attribute.new(name, type, options)
       @attributes[to_s] ||= []
       @attributes[to_s] << attribute
-      create_accessor(attribute.name)
+      attr_accessor attribute.method_name.intern
     end
     
     def attributes
@@ -36,7 +36,7 @@ module HappyMapper
       element = Element.new(name, type, options)
       @elements[to_s] ||= []
       @elements[to_s] << element
-      create_accessor(element.name)
+      attr_accessor element.method_name.intern
     end
     
     def elements
@@ -64,37 +64,47 @@ module HappyMapper
         :single => false,
         :from_root => false,
       }.merge(o)
-
+      
+      xpath, collection = '', []
+      
       doc   = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
       node  = doc.respond_to?(:root) ? doc.root : doc
-      xpath = ''
       
-      # if doc has a default namespace, turn on ':use_default_namespace' & set default_prefix for LibXML
+      # puts doc.inspect, doc.respond_to?(:root) ? doc.root.inspect : ''
+      
       unless node.namespaces.default.nil?
-        options[:use_default_namespace] = true 
         namespace = "default_ns:" 
         node.namespaces.default_prefix = namespace.chop
-        warn "Default XML namespace present -- results are unpredictable" 
+        # warn "Default XML namespace present -- results are unpredictable" 
       end
-
-      # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML)
+      
       if node.namespaces.to_a.size > 0 && namespace.nil? && !node.namespaces.namespace.nil?
         namespace = node.namespaces.namespace.prefix + ":" 
       end
       
-      nodes = if namespace
-        xpath += '/' if options[:from_root]
-        xpath += namespace
-        xpath += get_tag_name
-        node.find(xpath)        
-      else
-        xpath += '.' unless doc.respond_to?(:root)
-        xpath += '//'
-        xpath += get_tag_name
-        doc.find(xpath)
+      xpath += doc.respond_to?(:root) ? '' : '.'
+      xpath += options[:from_root] ? '/' : '//'
+      xpath += namespace  if namespace
+      xpath += get_tag_name
+      # puts "parse: #{xpath}"
+      
+      nodes = node.find(xpath)
+      nodes.each do |node|
+        obj = new
+        
+        attributes.each do |attr| 
+          obj.send("#{attr.method_name}=", 
+                    attr.from_xml_node(node))
+        end
+        
+        elements.each do |elem|
+          elem.namespace = namespace
+          # puts "#{elem.method_name} - #{namespace} - #{elem.namespace}"
+          obj.send("#{elem.method_name}=", 
+                    elem.from_xml_node(node))
+        end
+        collection << obj
       end
-
-      collection = create_collection(nodes, namespace)
 
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
       nodes = nil
@@ -102,47 +112,6 @@ module HappyMapper
 
       options[:single] ? collection.first : collection
     end
-    
-    private
-      def create_collection(nodes, namespace=nil)
-        nodes.inject([]) do |acc, el|
-          obj = new
-          attributes.each { |attr| obj.send("#{normalize_name attr.name}=", attr.from_xml_node(el)) }
-          elements.each   { |elem| obj.send("#{normalize_name elem.name}=", elem.from_xml_node(el, namespace)) }
-          acc << obj
-        end
-      end
-      
-      def create_getter(name)
-        name = normalize_name(name)
-
-        class_eval <<-EOS, __FILE__, __LINE__
-          def #{name}
-            @#{name}
-          end
-        EOS
-      end
-
-      def create_setter(name)
-        name = normalize_name(name)
-
-        class_eval <<-EOS, __FILE__, __LINE__
-          def #{name}=(value)
-            @#{name} = value
-          end
-        EOS
-      end
-
-      def create_accessor(name)
-        name = normalize_name(name)
-
-        create_getter(name)
-        create_setter(name)
-      end
-
-      def normalize_name(name)
-        name.gsub('-', '_')
-      end
   end
 end
 

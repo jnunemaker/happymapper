@@ -23,7 +23,7 @@ module PITA
   end
 end
 
-item = PITA::Items.parse(file_contents, :single => true, :use_default_namespace => true)
+item = PITA::Items.parse(file_contents, :single => true)
 item.items.each do |i|
   puts i.asin, i.detail_page_url, i.manufacturer, ''
 end

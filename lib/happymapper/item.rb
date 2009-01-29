@@ -1,7 +1,6 @@
 module HappyMapper
   class Item
-    attr_accessor :type, :tag, :options
-    attr_reader :name
+    attr_accessor :name, :type, :tag, :options, :namespace
     
     Types = [String, Float, Time, Date, DateTime, Integer, Boolean]
     
@@ -10,7 +9,7 @@ module HappyMapper
     #               grandchildren and all others down the chain (// in expath)
     #   :single =>  Boolean False if object should be collection, True for single object
     def initialize(name, type, o={})
-      self.name = name
+      self.name = name.to_s
       self.type = type
       self.tag = o.delete(:tag) || name.to_s
       self.options = {
@@ -20,19 +19,25 @@ module HappyMapper
       
       @xml_type = self.class.to_s.split('::').last.downcase
     end
-    
-    def name=(new_name)
-      @name = new_name.to_s
-    end
         
-    def from_xml_node(node, namespace = nil)
+    def from_xml_node(node)
       if primitive?
-        value_from_xml_node(node, namespace) do |value_before_type_cast|
+        value_from_xml_node(node) do |value_before_type_cast|
           typecast(value_before_type_cast)
         end
       else
         type.parse(node, options)
       end
+    end
+    
+    def xpath
+      xpath  = ''
+      xpath += './/' if options[:deep]
+      # puts "xpath namespace: #{namespace}"
+      xpath += namespace if namespace
+      xpath += tag
+      # puts "xpath: #{xpath}"
+      xpath
     end
     
     def primitive?
@@ -45,6 +50,10 @@ module HappyMapper
     
     def attribute?
       !element?
+    end
+    
+    def method_name
+      @method_name ||= name.tr('-', '_')
     end
     
     def typecast(value)
@@ -78,13 +87,10 @@ module HappyMapper
     end
     
     private
-      def value_from_xml_node(node, namespace=nil)
+      def value_from_xml_node(node)
         if element?
-          xpath  = ''
-          xpath += './/' if options[:deep]
-          xpath += namespace if namespace
-          xpath += tag
           result = node.find_first(xpath)
+          # puts "vfxn: #{xpath} #{result.inspect}"
           if result
             value = yield(result.content)
             if options[:attributes].is_a?(Hash)
