@@ -18,8 +18,13 @@ README
 spec/fixtures/address.xml
 spec/fixtures/commit.xml
 spec/fixtures/current_weather.xml
+spec/fixtures/family_tree.xml
+spec/fixtures/multiple_namespaces.xml
 spec/fixtures/pita.xml
 spec/fixtures/posts.xml
+spec/fixtures/product_default_namespace.xml
+spec/fixtures/product_no_namespace.xml
+spec/fixtures/product_single_namespace.xml
 spec/fixtures/radar.xml
 spec/fixtures/statuses.xml
 spec/happymapper_attribute_spec.rb
