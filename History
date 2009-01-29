@@ -1,6 +1,8 @@
 == 0.2.0
-* 1 major enhancement
+* 1 major enhancement, 2 minor ehancements
   * Automatic handling of namespaces (part by Robert Lowrey and rest by John Nunemaker)
+  * Added :root option to tag method. This allows setting an object as the root element, which sets xpath to use / and sets single to true
+  * Now defaulting tag names for classes in modules to last constant downcased
   
 == 0.1.7 2009-01-29
 * 1 minor enhancement
