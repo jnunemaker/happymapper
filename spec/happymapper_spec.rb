@@ -353,7 +353,7 @@ describe HappyMapper do
     second.manufacturer.should == 'Wrox'
   end
 
-  xit "should parse xml that has attributes of elements" do
+  it "should parse xml that has attributes of elements" do
     items = CurrentWeather.parse(fixture_file('current_weather.xml'))
     first = items[0]
     first.temperature.should == 51
@@ -452,6 +452,5 @@ describe HappyMapper do
     last_event.address.state.should == 'FL'
     last_event.address.zip.should == '327506398'
     track.tran_detail.cust_tran_id.should == '20090102-111321'
-  end
-  
+  end  
 end

@@ -25,7 +25,6 @@ module HappyMapper
           typecast(value_before_type_cast)
         end
       else
-        # use_default_namespace = !namespace.nil?
         type.parse(node, options)
       end
     end
@@ -73,12 +72,13 @@ module HappyMapper
     end
     
     private      
-      def value_from_xml_node(node, namespace=nil)        
-        # node.register_default_namespace(namespace.chop) if namespace
-        
+      def value_from_xml_node(node, namespace=nil)
         if element?
-          depth = options[:deep] ? './/' : ''
-          result = node.find_first("#{depth}#{namespace}#{tag}")
+          xpath  = ''
+          xpath += './/' if options[:deep]
+          xpath += namespace if namespace && !tag.include?(namespace)
+          xpath += tag
+          result = node.find_first(xpath)
           if result
             value = yield(result.content)
             if options[:attributes].is_a?(Hash)

@@ -5,12 +5,7 @@ class XML::Node
   # Open up XML::Node from libxml and add convenience methods inspired
   # by hpricot.
   # (http://code.whytheluckystiff.net/hpricot/wiki/HpricotBasics)
-  # Also:
-  #  * provide better handling of default namespaces
- 
-  # an array of default namespaces to past into
-  attr_accessor :default_namespaces
- 
+  
   # find the child node with the given xpath
   def at(xpath)
     self.find_first(xpath)

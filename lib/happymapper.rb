@@ -79,11 +79,15 @@ module HappyMapper
       # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML)
       if node.namespaces.to_a.size > 0 && namespace.nil? && !node.namespaces.namespace.nil?
         namespace = node.namespaces.namespace.prefix + ":" 
+        puts "namespace: #{namespace}"
       end
-
+      
       nodes = if namespace
-        node = doc.respond_to?(:root) ? doc.root : doc
-        node.find("#{'/' if options[:from_root]}#{namespace}#{get_tag_name}")
+        xpath  = ''
+        xpath += "/" if options[:from_root]
+        xpath += namespace unless get_tag_name.include?(namespace)
+        xpath += get_tag_name
+        node.find(xpath)        
       else
         doc.find("//#{get_tag_name}")
       end
