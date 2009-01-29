@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'pp'
+require 'uri'
 
 class Feature
   include HappyMapper
@@ -199,15 +200,19 @@ class Address
   element :country, String
 end
 
+# for type coercion
+class ProductGroup < String; end
+
 module PITA
   class Item
     include HappyMapper
     
     tag 'Item' # if you put class in module you need tag
     element :asin, String, :tag => 'ASIN'
-    element :detail_page_url, String, :tag => 'DetailPageURL'
+    element :detail_page_url, URI, :tag => 'DetailPageURL', :parser => :parse
     element :manufacturer, String, :tag => 'Manufacturer', :deep => true
     element :point, String, :tag => 'point', :namespace => 'georss'
+    element :product_group, ProductGroup, :tag => 'ProductGroup', :deep => true, :parser => :new, :raw => true
   end
 
   class Items
@@ -392,8 +397,10 @@ describe HappyMapper do
     second = items.items[1]
     first.asin.should == '0321480791'
     first.point.should == '38.5351715088 -121.7948684692'
-    first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
+    first.detail_page_url.should be_a_kind_of(URI)
+    first.detail_page_url.to_s.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
     first.manufacturer.should == 'Addison-Wesley Professional'
+    first.product_group.should == '<ProductGroup>Book</ProductGroup>'
     second.asin.should == '047022388X'
     second.manufacturer.should == 'Wrox'
   end

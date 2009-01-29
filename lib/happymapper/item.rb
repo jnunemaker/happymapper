@@ -9,6 +9,8 @@ module HappyMapper
     #               grandchildren and all others down the chain (// in expath)
     #   :namespace => String Element's namespace if it's not the global or inherited
     #                  default
+    #   :parser =>  Symbol Class method to use for type coercion.
+    #   :raw    =>  Boolean Use raw node value (inc. tags) when parsing.
     #   :single =>  Boolean False if object should be collection, True for single object
     #   :tag    =>  String Element name if it doesn't match the specified name.
     def initialize(name, type, o={})
@@ -22,11 +24,31 @@ module HappyMapper
         
     def from_xml_node(node, namespace)
       if primitive?
-        value_from_xml_node(node, namespace) do |value_before_type_cast|
-          typecast(value_before_type_cast)
+        find(node, namespace) do |n|
+          if n.respond_to?(:content)
+            typecast(n.content)
+          else
+            typecast(n.to_s)
+          end
         end
       else
-        type.parse(node, options)
+        if options[:parser]
+          find(node, namespace) do |n|
+            if n.respond_to?(:content) && !options[:raw]
+              value = n.content
+            else
+              value = n.to_s
+            end
+
+            begin
+              type.send(options[:parser].to_sym, value)
+            rescue
+              nil
+            end
+          end
+        else
+          type.parse(node, options)
+        end
       end
     end
     
@@ -86,7 +108,7 @@ module HappyMapper
     end
     
     private
-      def value_from_xml_node(node, namespace, &block)
+      def find(node, namespace, &block)
         # this node has a custom namespace (that is present in the doc)
         if self.namespace && node.namespaces.find_by_prefix(self.namespace)
           # from the class definition
@@ -100,7 +122,7 @@ module HappyMapper
           result = node.find_first(xpath(namespace))
           # puts "vfxn: #{xpath} #{result.inspect}"
           if result
-            value = yield(result.content)
+            value = yield(result)
             if options[:attributes].is_a?(Hash)
               result.attributes.each do |xml_attribute|
                 if attribute_options = options[:attributes][xml_attribute.name.to_sym]
