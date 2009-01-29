@@ -60,7 +60,9 @@ module HappyMapper
     end
     
     def get_tag_name
-      @tag_name ||= to_s.downcase
+      @tag_name ||= begin
+        to_s.split('::')[-1].downcase
+      end
     end
         
     def is_root?

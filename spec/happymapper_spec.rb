@@ -25,7 +25,6 @@ module FamilySearch
   class Person
     include HappyMapper
     
-    tag 'person'
     attribute :version, String
     attribute :modified, Time
     attribute :id, String
@@ -33,8 +32,6 @@ module FamilySearch
   
   class Persons
     include HappyMapper
-    
-    tag 'persons', :root => false
     has_many :person, Person
   end
   
@@ -175,6 +172,7 @@ end
 
 class CurrentWeather
   include HappyMapper
+  
   tag 'ob'
   element :temperature, Integer, :tag => 'temp'
   element :feels_like, Integer, :tag => 'feels-like'
@@ -293,8 +291,13 @@ describe HappyMapper do
       element.options[:single] = false
     end
     
-    it "should default tag name to class" do
+    it "should default tag name to lowercase class" do
       Foo.get_tag_name.should == 'foo'
+    end
+    
+    it "should default tag name of class in modules to the last constant lowercase" do
+      module Bar; class Baz; include HappyMapper; end; end
+      Bar::Baz.get_tag_name.should == 'baz'
     end
     
     it "should allow setting tag name" do
