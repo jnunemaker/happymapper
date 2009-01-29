@@ -62,36 +62,38 @@ module HappyMapper
     def parse(xml, o={})
       options = {
         :single => false,
-        :use_default_namespace => false,
+        :from_root => false,
       }.merge(o)
-      
-      namespace = "default_ns:" if options[:use_default_namespace]
-      doc = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
-      
+
+      doc  = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
+      node = doc.respond_to?(:root) ? doc.root : doc
+
+      # if doc has a default namespace, turn on ':use_default_namespace' & set default_prefix for LibXML
+      unless node.namespaces.default.nil?
+        options[:use_default_namespace] = true 
+        namespace = "default_ns:" 
+        node.namespaces.default_prefix = namespace.chop
+        warn "Default XML namespace present -- results are unpredictable" 
+      end
+
+      # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML)
+      if node.namespaces.to_a.size > 0 && namespace.nil? && !node.namespaces.namespace.nil?
+        namespace = node.namespaces.namespace.prefix + ":" 
+      end
+
       nodes = if namespace
         node = doc.respond_to?(:root) ? doc.root : doc
-        node.register_default_namespace(namespace.chop)
-        node.find("#{namespace}#{get_tag_name}")
+        node.find("#{'/' if options[:from_root]}#{namespace}#{get_tag_name}")
       else
         doc.find("//#{get_tag_name}")
       end
 
-      nodes = if namespace
-        node = doc.respond_to?(:root) ? doc.root : doc
-        node.register_default_namespace(namespace.chop)
-        node.find("#{namespace}#{get_tag_name}")
-      else
-        nested = '.' unless doc.respond_to?(:root)
-        path = "#{nested}//#{get_tag_name}"
-        doc.find(path)
-      end
-
       collection = create_collection(nodes, namespace)
-      
+
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
       nodes = nil
       GC.start
-      
+
       options[:single] ? collection.first : collection
     end
     

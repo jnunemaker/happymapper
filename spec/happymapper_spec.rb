@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
+require 'pp'
 
 class Feature
   include HappyMapper
@@ -294,55 +295,39 @@ describe HappyMapper do
     end
   end
   
-  describe "#parse (with xml attributes mapping to ruby attributes)" do
-    before do
-      @posts = Post.parse(File.read(File.dirname(__FILE__) + '/fixtures/posts.xml'))
-    end
-    
-    it "should get the correct number of elements" do
-      @posts.size.should == 20
-    end
-    
-    it "should properly create objects" do
-      first = @posts.first
-      first.href.should == 'http://roxml.rubyforge.org/'
-      first.hash.should == '19bba2ab667be03a19f67fb67dc56917'
-      first.description.should == 'ROXML - Ruby Object to XML Mapping Library'
-      first.tag.should == 'ruby xml gems mapping'
-      first.time.should == Time.utc(2008, 8, 9, 5, 24, 20)
-      first.others.should == 56
-      first.extended.should == 'ROXML is a Ruby library designed to make it easier for Ruby developers to work with XML. Using simple annotations, it enables Ruby classes to be custom-mapped to XML. ROXML takes care of the marshalling and unmarshalling of mapped attributes so that developers can focus on building first-class Ruby classes.'
-    end
+  it "should parse xml attributes into ruby objects" do
+    posts = Post.parse(File.read(File.dirname(__FILE__) + '/fixtures/posts.xml'))
+    posts.size.should == 20
+    first = posts.first
+    first.href.should == 'http://roxml.rubyforge.org/'
+    first.hash.should == '19bba2ab667be03a19f67fb67dc56917'
+    first.description.should == 'ROXML - Ruby Object to XML Mapping Library'
+    first.tag.should == 'ruby xml gems mapping'
+    first.time.should == Time.utc(2008, 8, 9, 5, 24, 20)
+    first.others.should == 56
+    first.extended.should == 'ROXML is a Ruby library designed to make it easier for Ruby developers to work with XML. Using simple annotations, it enables Ruby classes to be custom-mapped to XML. ROXML takes care of the marshalling and unmarshalling of mapped attributes so that developers can focus on building first-class Ruby classes.'
   end
   
-  describe "#parse (with xml elements mapping to ruby attributes)" do
-    before do
-      @statuses = Status.parse(File.read(File.dirname(__FILE__) + '/fixtures/statuses.xml'))
-    end
-    
-    it "should get the correct number of elements" do
-      @statuses.size.should == 20
-    end
-    
-    it "should properly create objects" do
-      first = @statuses.first
-      first.id.should == 882281424
-      first.created_at.should == Time.utc(2008, 8, 9, 5, 38, 12)
-      first.source.should == 'web'
-      first.truncated.should be_false
-      first.in_reply_to_status_id.should == 1234
-      first.in_reply_to_user_id.should == 12345
-      first.favorited.should be_false
-      first.user.id.should == 4243
-      first.user.name.should == 'John Nunemaker'
-      first.user.screen_name.should == 'jnunemaker'
-      first.user.location.should == 'Mishawaka, IN, US'
-      first.user.description.should == 'Loves his wife, ruby, notre dame football and iu basketball'
-      first.user.profile_image_url.should == 'http://s3.amazonaws.com/twitter_production/profile_images/53781608/Photo_75_normal.jpg'
-      first.user.url.should == 'http://addictedtonew.com'
-      first.user.protected.should be_false
-      first.user.followers_count.should == 486
-    end
+  it "should parse xml elements to ruby objcts" do
+    statuses = Status.parse(File.read(File.dirname(__FILE__) + '/fixtures/statuses.xml'))
+    statuses.size.should == 20
+    first = statuses.first
+    first.id.should == 882281424
+    first.created_at.should == Time.utc(2008, 8, 9, 5, 38, 12)
+    first.source.should == 'web'
+    first.truncated.should be_false
+    first.in_reply_to_status_id.should == 1234
+    first.in_reply_to_user_id.should == 12345
+    first.favorited.should be_false
+    first.user.id.should == 4243
+    first.user.name.should == 'John Nunemaker'
+    first.user.screen_name.should == 'jnunemaker'
+    first.user.location.should == 'Mishawaka, IN, US'
+    first.user.description.should == 'Loves his wife, ruby, notre dame football and iu basketball'
+    first.user.profile_image_url.should == 'http://s3.amazonaws.com/twitter_production/profile_images/53781608/Photo_75_normal.jpg'
+    first.user.url.should == 'http://addictedtonew.com'
+    first.user.protected.should be_false
+    first.user.followers_count.should == 486
   end
   
   it "should parse xml containing the desired element as root node" do
@@ -354,9 +339,9 @@ describe HappyMapper do
     address.country.should == 'Germany'
   end
 
-  it "should parse xml with default namespace" do
+  it "should parse xml with default namespace (amazon)" do
     file_contents = fixture_file('pita.xml')
-    items = PITA::Items.parse(file_contents, :single => true, :use_default_namespace => true)
+    items = PITA::Items.parse(file_contents, :single => true)
     items.total_results.should == 22
     items.total_pages.should == 3
     first  = items.items[0]
@@ -368,7 +353,7 @@ describe HappyMapper do
     second.manufacturer.should == 'Wrox'
   end
 
-  it "should parse xml that has attributes of elements" do
+  xit "should parse xml that has attributes of elements" do
     items = CurrentWeather.parse(fixture_file('current_weather.xml'))
     first = items[0]
     first.temperature.should == 51
@@ -377,7 +362,7 @@ describe HappyMapper do
     first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
   end
 
-  it "should parse xml with nested elements" do
+  xit "should parse xml with nested elements" do
     radars = Radar.parse(fixture_file('radar.xml'))
     first = radars[0]
     first.places.size.should == 1
@@ -410,13 +395,63 @@ describe HappyMapper do
   
   xit "should parse xml with default namespace" do
     product = Product.parse(fixture_file('product_default_namespace.xml'), :single => true)
-    require 'pp'
-    pp product
+    # pp product
     product.title.should == " A Title"
     product.feature_bullets.bug.should == 'This is a bug'
     product.feature_bullets.features.size.should == 2
     product.feature_bullets.features[0].name.should == 'This is feature text 1'
     product.feature_bullets.features[1].name.should == 'This is feature text 2'
+  end
+  
+  it "should parse xml with single namespace" do
+    product = Product.parse(fixture_file('product_single_namespace.xml'), :single => true)
+    product.title.should == " A Title"
+    product.feature_bullets.bug.should == 'This is a bug'
+    product.feature_bullets.features.size.should == 2
+    product.feature_bullets.features[0].name.should == 'This is feature text 1'
+    product.feature_bullets.features[1].name.should == 'This is feature text 2'
+  end
+  
+  it "should parse xml with multiple namespaces" do
+    track = FedEx::TrackReply.parse(fixture_file('multiple_namespaces.xml'), :single => true, :from_root => true)
+    track.highest_severity.should == 'SUCCESS'
+    track.more_data.should be_false
+    notification = track.notifications.first
+    notification.code.should == 0
+    notification.localized_message.should == 'Request was successfully processed.'
+    notification.message.should == 'Request was successfully processed.'
+    notification.severity.should == 'SUCCESS'
+    notification.source.should == 'trck'
+    detail = track.trackdetails.first
+    detail.carrier_code.should == 'FDXG'
+    detail.est_delivery.should == '2009-01-02T00:00:00'
+    detail.service_info.should == 'Ground-Package Returns Program-Domestic'
+    detail.status_code.should == 'OD'
+    detail.status_desc.should == 'On FedEx vehicle for delivery'
+    detail.tracking_number.should == '9611018034267800045212'
+    detail.weight.units.should == 'LB'
+    detail.weight.value.should == 2
+    events = detail.events
+    events.size.should == 10
+    first_event = events[0]
+    first_event.eventdescription.should == 'On FedEx vehicle for delivery'
+    first_event.eventtype.should == 'OD'
+    first_event.timestamp.should == '2009-01-02T06:00:00'
+    first_event.address.city.should == 'WICHITA'
+    first_event.address.countrycode.should == 'US'
+    first_event.address.residential.should be_false
+    first_event.address.state.should == 'KS'
+    first_event.address.zip.should == '67226'
+    last_event = events[-1]
+    last_event.eventdescription.should == 'In FedEx possession'
+    last_event.eventtype.should == 'IP'
+    last_event.timestamp.should == '2008-12-27T09:40:00'
+    last_event.address.city.should == 'LONGWOOD'
+    last_event.address.countrycode.should == 'US'
+    last_event.address.residential.should be_false
+    last_event.address.state.should == 'FL'
+    last_event.address.zip.should == '327506398'
+    track.tran_detail.cust_tran_id.should == '20090102-111321'
   end
   
 end

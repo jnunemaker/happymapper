@@ -25,8 +25,8 @@ module HappyMapper
           typecast(value_before_type_cast)
         end
       else
-        use_default_namespace = !namespace.nil?
-        type.parse(node, options.merge(:use_default_namespace => use_default_namespace))
+        # use_default_namespace = !namespace.nil?
+        type.parse(node, options)
       end
     end
     
@@ -74,7 +74,7 @@ module HappyMapper
     
     private      
       def value_from_xml_node(node, namespace=nil)        
-        node.register_default_namespace(namespace.chop) if namespace
+        # node.register_default_namespace(namespace.chop) if namespace
         
         if element?
           depth = options[:deep] ? './/' : ''
