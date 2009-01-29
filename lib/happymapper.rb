@@ -88,6 +88,7 @@ module HappyMapper
         xpath += get_tag_name
         node.find(xpath)        
       else
+        xpath += '.' unless doc.respond_to?(:root)
         xpath += '//'
         xpath += get_tag_name
         doc.find(xpath)

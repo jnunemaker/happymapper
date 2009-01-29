@@ -360,7 +360,7 @@ describe HappyMapper do
     first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
   end
 
-  xit "should parse xml with nested elements" do
+  it "should parse xml with nested elements" do
     radars = Radar.parse(fixture_file('radar.xml'))
     first = radars[0]
     first.places.size.should == 1
