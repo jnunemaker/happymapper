@@ -1,5 +1,100 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
+class Feature
+  include HappyMapper
+
+  element :name, String, :tag => '.'
+end
+
+class FeatureBullet
+  include HappyMapper
+
+  tag 'features_bullets'
+  has_many :features, Feature
+  element :bug, String
+end
+
+class Product
+  include HappyMapper
+
+  element :title, String
+  has_one :feature_bullets, FeatureBullet
+end
+
+module FedEx
+  class Address
+    include HappyMapper
+    
+    tag 'Address'
+    element :city, String, :tag => 'City'
+    element :state, String, :tag => 'StateOrProvinceCode'
+    element :zip, String, :tag => 'PostalCode'
+    element :countrycode, String, :tag => 'CountryCode'
+    element :residential, Boolean, :tag => 'Residential'
+  end
+  
+  class Event
+    include HappyMapper
+    
+    tag 'Events'
+    element :timestamp, String, :tag => 'Timestamp'
+    element :eventtype, String, :tag => 'EventType'
+    element :eventdescription, String, :tag => 'EventDescription'
+    has_one :address, Address
+  end
+  
+  class PackageWeight
+    include HappyMapper
+    
+    tag 'PackageWeight'
+    element :units, String, :tag => 'Units'
+    element :value, Integer, :tag => 'Value'
+  end
+  
+  class TrackDetails
+    include HappyMapper
+    
+    tag 'TrackDetails'
+    element   :tracking_number, String, :tag => 'TrackingNumber'
+    element   :status_code, String, :tag => 'StatusCode'
+    element   :status_desc, String, :tag => 'StatusDescription'
+    element   :carrier_code, String, :tag => 'CarrierCode'
+    element   :service_info, String, :tag => 'ServiceInfo'
+    has_one   :weight, PackageWeight, :tag => 'PackageWeight'
+    element   :est_delivery,  String, :tag => 'EstimatedDeliveryTimestamp'
+    has_many  :events, Event
+  end 
+    
+  class Notification
+    include HappyMapper
+    
+    tag 'Notifications'
+    element :severity, String, :tag => 'Severity'
+    element :source, String, :tag => 'Source'
+    element :code, Integer, :tag => 'Code'
+    element :message, String, :tag => 'Message'
+    element :localized_message, String, :tag => 'LocalizedMessage'
+  end
+  
+  class TransactionDetail
+    include HappyMapper
+    
+    tag 'TransactionDetail'
+    element :cust_tran_id, String, :tag => 'CustomerTransactionId'
+  end
+  
+  class TrackReply
+    include HappyMapper
+  
+    tag 'TrackReply'
+    element   :highest_severity, String, :tag => 'HighestSeverity'
+    has_many  :notifications, Notification, :tag => 'Notifications'
+    has_one   :tran_detail, TransactionDetail, :tab => 'TransactionDetail'
+    element   :more_data, Boolean, :tag => 'MoreData'
+    has_many  :trackdetails, TrackDetails, :tag => 'TrackDetails'
+  end
+end
+
 class Place
   include HappyMapper
 
@@ -249,89 +344,79 @@ describe HappyMapper do
       first.user.followers_count.should == 486
     end
   end
+  
+  it "should parse xml containing the desired element as root node" do
+    address = Address.parse(fixture_file('address.xml'), :single => true)
+    address.street.should == 'Milchstrasse'
+    address.postcode.should == '26131'
+    address.housenumber.should == '23'
+    address.city.should == 'Oldenburg'
+    address.country.should == 'Germany'
+  end
 
-  describe "#parse (with xml containing the desired element as root node)" do
-    before do
-      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/address.xml')
-      @address = Address.parse(file_contents, :single => true)
-    end
+  it "should parse xml with default namespace" do
+    file_contents = fixture_file('pita.xml')
+    items = PITA::Items.parse(file_contents, :single => true, :use_default_namespace => true)
+    items.total_results.should == 22
+    items.total_pages.should == 3
+    first  = items.items[0]
+    second = items.items[1]
+    first.asin.should == '0321480791'
+    first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
+    first.manufacturer.should == 'Addison-Wesley Professional'
+    second.asin.should == '047022388X'
+    second.manufacturer.should == 'Wrox'
+  end
 
-    it "should properly create objects" do
-      @address.street.should == 'Milchstrasse'
-      @address.postcode.should == '26131'
-      @address.housenumber.should == '23'
-      @address.city.should == 'Oldenburg'
-      @address.country.should == 'Germany'
-    end
+  it "should parse xml that has attributes of elements" do
+    items = CurrentWeather.parse(fixture_file('current_weather.xml'))
+    first = items[0]
+    first.temperature.should == 51
+    first.feels_like.should == 51
+    first.current_condition.should == 'Sunny'
+    first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
+  end
+
+  it "should parse xml with nested elements" do
+    radars = Radar.parse(fixture_file('radar.xml'))
+    first = radars[0]
+    first.places.size.should == 1
+    first.places[0].name.should == 'Store'
+    second = radars[1]
+    second.places.size.should == 0
+    third = radars[2]
+    third.places.size.should == 2
+    third.places[0].name.should == 'Work'
+    third.places[1].name.should == 'Home'
   end
   
-  # TODO: someone please get xml with namespaces working, kthxbai
-  describe "#parse (with xml that has namespace)" do
-    before do
-      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/pita.xml')
-      @items = PITA::Items.parse(file_contents, :single => true, :use_default_namespace => true)
-    end
-    
-    it "should properly create objects" do
-      @items.total_results.should == 22
-      @items.total_pages.should == 3
-      first  = @items.items[0]
-      second = @items.items[1]
-      first.asin.should == '0321480791'
-      first.detail_page_url.should == 'http://www.amazon.com/gp/redirect.html%3FASIN=0321480791%26tag=ws%26lcode=xm2%26cID=2025%26ccmID=165953%26location=/o/ASIN/0321480791%253FSubscriptionId=dontbeaswoosh'
-      first.manufacturer.should == 'Addison-Wesley Professional'
-      second.asin.should == '047022388X'
-      second.manufacturer.should == 'Wrox'
-    end
+  it "should parse xml that has elements with dashes" do
+    commit = GitHub::Commit.parse(fixture_file('commit.xml')).first
+    commit.message.should == "move commands.rb and helpers.rb into commands/ dir"
+    commit.url.should == "http://github.com/defunkt/github-gem/commit/c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
+    commit.id.should == "c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
+    commit.committed_date.should == Date.parse("2008-03-02T16:45:41-08:00")
+    commit.tree.should == "28a1a1ca3e663d35ba8bf07d3f1781af71359b76"
   end
-
-  describe "#parse (with xml that has attributes of elements)" do
-    before do
-      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/current_weather.xml')
-      @items = CurrentWeather.parse(file_contents)
-    end
-    
-    it "should properly create objects" do
-      @first = @items[0]
-      @first.temperature.should == 51
-      @first.feels_like.should == 51
-      @first.current_condition.should == 'Sunny'
-      @first.current_condition.icon.should == 'http://deskwx.weatherbug.com/images/Forecast/icons/cond007.gif'
-    end
+  
+  it "should parse xml with no namespace" do
+    product = Product.parse(fixture_file('product_no_namespace.xml'), :single => true)
+    product.title.should == " A Title"
+    product.feature_bullets.bug.should == 'This is a bug'
+    product.feature_bullets.features.size.should == 2
+    product.feature_bullets.features[0].name.should == 'This is feature text 1'
+    product.feature_bullets.features[1].name.should == 'This is feature text 2'
   end
-
-  describe "#parse (with xml that has nested elements)" do
-    before do
-      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/radar.xml')
-      @radars = Radar.parse(file_contents)
-    end
-
-    it "should properly create objects" do
-      @first = @radars[0]
-      @first.places.size.should == 1
-      @first.places[0].name.should == 'Store'
-      @second = @radars[1]
-      @second.places.size.should == 0
-      @third = @radars[2]
-      @third.places.size.should == 2
-      @third.places[0].name.should == 'Work'
-      @third.places[1].name.should == 'Home'
-    end
+  
+  xit "should parse xml with default namespace" do
+    product = Product.parse(fixture_file('product_default_namespace.xml'), :single => true)
+    require 'pp'
+    pp product
+    product.title.should == " A Title"
+    product.feature_bullets.bug.should == 'This is a bug'
+    product.feature_bullets.features.size.should == 2
+    product.feature_bullets.features[0].name.should == 'This is feature text 1'
+    product.feature_bullets.features[1].name.should == 'This is feature text 2'
   end
-
-  describe "#parse (with xml that has elements with dashes in them)" do
-    before do
-      file_contents = File.read(File.dirname(__FILE__) + '/fixtures/commit.xml')
-      @commit = GitHub::Commit.parse(file_contents).first
-    end
-
-    it "should properly create objects" do
-      @commit.message.should == "move commands.rb and helpers.rb into commands/ dir"
-      @commit.url.should == "http://github.com/defunkt/github-gem/commit/c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
-      @commit.id.should == "c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
-      @commit.committed_date.should == Date.parse("2008-03-02T16:45:41-08:00")
-      @commit.tree.should == "28a1a1ca3e663d35ba8bf07d3f1781af71359b76"
-    end
-
-  end
+  
 end
