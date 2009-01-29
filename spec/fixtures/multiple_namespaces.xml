@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<feed xmlns:ga="http://bigco.com" xmlns:opensearch="http://bigco.com">
+ <opensearch:totalresults>4</opensearch:totalresults>
+  <opensearch:startindex>1</opensearch:startindex>
+   <opensearch:itemsperpage>4</opensearch:itemsperpage> 
+   <entry> 
+    <ga:accountid>12345</ga:accountid> 
+    <ga:accountname>Pride and Prejudice</ga:accountname> 
+    <ga:profileid>4321</ga:profileid> 
+    <ga:webpropertyid>UA-12345-1</ga:webpropertyid> 
+    <ga:tableid>ga:4321</ga:tableid> </entry> 
+  <entry> 
+    <ga:accountid>12345</ga:accountid> 
+    <ga:accountname>Pride and Prejudice</ga:accountname> 
+    <ga:profileid>5555</ga:profileid> 
+    <ga:webpropertyid>UA-12345-2</ga:webpropertyid> 
+    <ga:tableid>ga:5555</ga:tableid> </entry> 
+  <entry> 
+    <ga:accountid>54321</ga:accountid> 
+    <ga:accountname>Jane Austen</ga:accountname> 
+    <ga:profileid>2222</ga:profileid> 
+    <ga:webpropertyid>UA-54321-1</ga:webpropertyid> 
+    <ga:tableid>ga:2222</ga:tableid> </entry> 
+  <entry> 
+    <ga:accountid>54321</ga:accountid> 
+    <ga:accountname>Jane Austen</ga:accountname> 
+    <ga:profileid>3333</ga:profileid> 
+    <ga:webpropertyid>UA-54321-2</ga:webpropertyid> 
+    <ga:tableid>ga:3333</ga:tableid> 
+  </entry>
+</feed>
