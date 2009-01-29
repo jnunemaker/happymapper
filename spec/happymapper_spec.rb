@@ -21,6 +21,34 @@ class Product
   has_one :feature_bullets, FeatureBullet
 end
 
+module FamilySearch
+  class Person
+    include HappyMapper
+    
+    tag 'person'
+    attribute :version, String
+    attribute :modified, Time
+    attribute :id, String
+  end
+  
+  class Persons
+    include HappyMapper
+    
+    tag 'persons', :root => false
+    has_many :person, Person
+  end
+  
+  class FamilyTree
+    include HappyMapper
+    
+    tag 'familytree', :root => true
+    attribute :version, String
+    attribute :status_message, String, :tag => 'statusMessage'
+    attribute :status_code, String, :tag => 'statusCode'
+    has_one :persons, Persons
+  end
+end
+
 module FedEx
   class Address
     include HappyMapper
@@ -85,13 +113,13 @@ module FedEx
   
   class TrackReply
     include HappyMapper
-  
-    tag 'TrackReply'
+    
+    tag 'TrackReply', :root => true
     element   :highest_severity, String, :tag => 'HighestSeverity'
-    has_many  :notifications, Notification, :tag => 'Notifications'
-    has_one   :tran_detail, TransactionDetail, :tab => 'TransactionDetail'
     element   :more_data, Boolean, :tag => 'MoreData'
+    has_many  :notifications, Notification, :tag => 'Notifications'
     has_many  :trackdetails, TrackDetails, :tag => 'TrackDetails'
+    has_one   :tran_detail, TransactionDetail, :tab => 'TransactionDetail'
   end
 end
 
@@ -156,6 +184,7 @@ end
 class Address
   include HappyMapper
   
+  tag 'address', :root => true
   element :street, String
   element :postcode, String
   element :housenumber, String
@@ -187,8 +216,7 @@ module GitHub
   class Commit
     include HappyMapper
 
-    tag "commit"
-
+    tag "commit", :root => true
     element :url, String
     element :tree, String
     element :message, String
@@ -294,7 +322,7 @@ describe HappyMapper do
   end
   
   it "should parse xml attributes into ruby objects" do
-    posts = Post.parse(File.read(File.dirname(__FILE__) + '/fixtures/posts.xml'))
+    posts = Post.parse(fixture_file('posts.xml'))
     posts.size.should == 20
     first = posts.first
     first.href.should == 'http://roxml.rubyforge.org/'
@@ -307,7 +335,7 @@ describe HappyMapper do
   end
   
   it "should parse xml elements to ruby objcts" do
-    statuses = Status.parse(File.read(File.dirname(__FILE__) + '/fixtures/statuses.xml'))
+    statuses = Status.parse(fixture_file('statuses.xml'))
     statuses.size.should == 20
     first = statuses.first
     first.id.should == 882281424
@@ -374,7 +402,7 @@ describe HappyMapper do
   end
   
   it "should parse xml that has elements with dashes" do
-    commit = GitHub::Commit.parse(fixture_file('commit.xml')).first
+    commit = GitHub::Commit.parse(fixture_file('commit.xml'))
     commit.message.should == "move commands.rb and helpers.rb into commands/ dir"
     commit.url.should == "http://github.com/defunkt/github-gem/commit/c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
     commit.id.should == "c26d4ce9807ecf57d3f9eefe19ae64e75bcaaa8b"
@@ -410,7 +438,7 @@ describe HappyMapper do
   end
   
   it "should parse xml with multiple namespaces" do
-    track = FedEx::TrackReply.parse(fixture_file('multiple_namespaces.xml'), :single => true, :from_root => true)
+    track = FedEx::TrackReply.parse(fixture_file('multiple_namespaces.xml'))
     track.highest_severity.should == 'SUCCESS'
     track.more_data.should be_false
     notification = track.notifications.first
@@ -449,5 +477,16 @@ describe HappyMapper do
     last_event.address.state.should == 'FL'
     last_event.address.zip.should == '327506398'
     track.tran_detail.cust_tran_id.should == '20090102-111321'
-  end  
+  end
+  
+  xit "should parse family search xml" do
+    tree = FamilySearch::FamilyTree.parse(fixture_file('family_tree.xml'))
+    tree.version.should == '1.0.20071213.942'
+    tree.status_message.should == 'OK'
+    tree.status_code.should == '200'
+    # tree.people.size.should == 1
+    # tree.people.first.version.should == '1199378491000'
+    # tree.people.first.modified.should == Time.utc(2008, 1, 3, 16, 41, 31) # 2008-01-03T09:41:31-07:00
+    # tree.people.first.id.should == 'KWQS-BBQ'
+  end
 end

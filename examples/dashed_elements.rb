@@ -7,8 +7,7 @@ module GitHub
   class Commit
     include HappyMapper
 
-    tag "commit"
-
+    tag "commit", :root => true
     element :url, String
     element :tree, String
     element :message, String
@@ -17,7 +16,5 @@ module GitHub
   end
 end
 
-commits = GitHub::Commit.parse(file_contents)
-commits.each do |commit|
-  puts commit.committed_date, commit.url, commit.id
-end
+commit = GitHub::Commit.parse(file_contents)
+puts commit.committed_date, commit.url, commit.id

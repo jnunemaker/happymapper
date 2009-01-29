@@ -51,22 +51,24 @@ module HappyMapper
       element name, type, {:single => false}.merge(options)
     end
     
-    def tag(new_tag_name)
+    # Options:
+    #   :root => Boolean, true means this is xml root
+    def tag(new_tag_name, o={})
+      options = {:root => false}.merge(o)
+      @root = options.delete(:root)
       @tag_name = new_tag_name.to_s
     end
     
     def get_tag_name
       @tag_name ||= to_s.downcase
     end
+        
+    def is_root?
+      @root
+    end
     
-    def parse(xml, o={})
-      options = {
-        :single => false,
-        :from_root => false,
-      }.merge(o)
-      
-      xpath, collection = '', []
-      
+    def parse(xml, o={})      
+      xpath, collection, options = '', [], {:single => false}.merge(o)
       doc   = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
       node  = doc.respond_to?(:root) ? doc.root : doc
       
@@ -82,26 +84,25 @@ module HappyMapper
         namespace = node.namespaces.namespace.prefix + ":" 
       end
       
-      xpath += doc.respond_to?(:root) ? '' : '.'
-      xpath += options[:from_root] ? '/' : '//'
+      # xpath += doc.respond_to?(:root) ? '' : '.'
+      xpath += is_root? ? '/' : './/'
       xpath += namespace  if namespace
       xpath += get_tag_name
       # puts "parse: #{xpath}"
       
       nodes = node.find(xpath)
-      nodes.each do |node|
+      nodes.each do |n|
         obj = new
         
         attributes.each do |attr| 
           obj.send("#{attr.method_name}=", 
-                    attr.from_xml_node(node))
+                    attr.from_xml_node(n))
         end
         
         elements.each do |elem|
           elem.namespace = namespace
-          # puts "#{elem.method_name} - #{namespace} - #{elem.namespace}"
           obj.send("#{elem.method_name}=", 
-                    elem.from_xml_node(node))
+                    elem.from_xml_node(n))
         end
         collection << obj
       end
@@ -110,7 +111,7 @@ module HappyMapper
       nodes = nil
       GC.start
 
-      options[:single] ? collection.first : collection
+      options[:single] || is_root? ? collection.first : collection
     end
   end
 end

@@ -33,7 +33,6 @@ module HappyMapper
     def xpath
       xpath  = ''
       xpath += './/' if options[:deep]
-      # puts "xpath namespace: #{namespace}"
       xpath += namespace if namespace
       xpath += tag
       # puts "xpath: #{xpath}"
