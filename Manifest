@@ -2,6 +2,7 @@ examples/amazon.rb
 examples/current_weather.rb
 examples/post.rb
 examples/twitter.rb
+happymapper.gemspec
 History
 lib/happymapper/attribute.rb
 lib/happymapper/element.rb
@@ -14,6 +15,7 @@ Manifest
 Rakefile
 README
 spec/fixtures/address.xml
+spec/fixtures/commit.xml
 spec/fixtures/current_weather.xml
 spec/fixtures/pita.xml
 spec/fixtures/posts.xml
