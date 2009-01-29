@@ -10,8 +10,14 @@ module HappyMapper
     #               grandchildren and all others down the chain (// in expath)
     #   :single =>  Boolean False if object should be collection, True for single object
     def initialize(name, type, o={})
-      self.name, self.type, self.tag = name, type, o.delete(:tag) || name.to_s
-      self.options = {:single => false, :deep => false}.merge(o)
+      self.name = name
+      self.type = type
+      self.tag = o.delete(:tag) || name.to_s
+      self.options = {
+        :single => false, 
+        :deep   => false,
+      }.merge(o)
+      
       @xml_type = self.class.to_s.split('::').last.downcase
     end
     
@@ -71,12 +77,12 @@ module HappyMapper
       end
     end
     
-    private      
+    private
       def value_from_xml_node(node, namespace=nil)
         if element?
           xpath  = ''
           xpath += './/' if options[:deep]
-          xpath += namespace if namespace && !tag.include?(namespace)
+          xpath += namespace if namespace
           xpath += tag
           result = node.find_first(xpath)
           if result

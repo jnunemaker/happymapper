@@ -65,9 +65,10 @@ module HappyMapper
         :from_root => false,
       }.merge(o)
 
-      doc  = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
-      node = doc.respond_to?(:root) ? doc.root : doc
-
+      doc   = xml.is_a?(LibXML::XML::Node) ? xml : xml.to_libxml_doc
+      node  = doc.respond_to?(:root) ? doc.root : doc
+      xpath = ''
+      
       # if doc has a default namespace, turn on ':use_default_namespace' & set default_prefix for LibXML
       unless node.namespaces.default.nil?
         options[:use_default_namespace] = true 
@@ -79,17 +80,17 @@ module HappyMapper
       # if not using default namespace, get our namespace prefix (if we have one) (thanks to LibXML)
       if node.namespaces.to_a.size > 0 && namespace.nil? && !node.namespaces.namespace.nil?
         namespace = node.namespaces.namespace.prefix + ":" 
-        puts "namespace: #{namespace}"
       end
       
       nodes = if namespace
-        xpath  = ''
-        xpath += "/" if options[:from_root]
-        xpath += namespace unless get_tag_name.include?(namespace)
+        xpath += '/' if options[:from_root]
+        xpath += namespace
         xpath += get_tag_name
         node.find(xpath)        
       else
-        doc.find("//#{get_tag_name}")
+        xpath += '//'
+        xpath += get_tag_name
+        doc.find(xpath)
       end
 
       collection = create_collection(nodes, namespace)
