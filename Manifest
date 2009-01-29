@@ -1,5 +1,6 @@
 examples/amazon.rb
 examples/current_weather.rb
+examples/dashed_elements.rb
 examples/post.rb
 examples/twitter.rb
 happymapper.gemspec
