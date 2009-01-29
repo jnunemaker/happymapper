@@ -1,2 +1,1 @@
 * doesn't do xml namespaces really (does work with default namespace though)
-* switch gem management to echoe as i did with httparty
