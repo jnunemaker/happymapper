@@ -1,3 +1,8 @@
+== 0.2.2
+* 2 minor tweaks
+  * removed GC.start (libxml recommended this) as setting nodes to nil should be enough, specs run 3-4x faster (Brandon Keepers)
+  * renamed get_tag_name to tag_name (Brandon Keepers)
+  
 == 0.2.1
 * 1 minor fix, 3 major enhancements
   * fixed warnings about using XML::Parser (mojodna)
