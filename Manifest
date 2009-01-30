@@ -3,7 +3,6 @@ examples/current_weather.rb
 examples/dashed_elements.rb
 examples/post.rb
 examples/twitter.rb
-happymapper.gemspec
 History
 lib/happymapper/attribute.rb
 lib/happymapper/element.rb
