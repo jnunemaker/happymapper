@@ -38,7 +38,7 @@ module FamilySearch
   class FamilyTree
     include HappyMapper
     
-    tag 'familytree', :root => true
+    tag 'familytree'
     attribute :version, String
     attribute :status_message, String, :tag => 'statusMessage'
     attribute :status_code, String, :tag => 'statusCode'
@@ -117,7 +117,7 @@ module FedEx
   class TrackReply
     include HappyMapper
     
-    tag 'TrackReply', :root => true
+    tag 'TrackReply'
     namespace 'v2'
     element   :highest_severity, String, :tag => 'HighestSeverity'
     element   :more_data, Boolean, :tag => 'MoreData'
@@ -191,7 +191,7 @@ end
 class Address
   include HappyMapper
   
-  tag 'address', :root => true
+  tag 'address'
   element :street, String
   element :postcode, String
   element :housenumber, String
@@ -224,7 +224,7 @@ module GitHub
   class Commit
     include HappyMapper
 
-    tag "commit", :root => true
+    tag "commit"
     element :url, String
     element :tree, String
     element :message, String

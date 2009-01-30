@@ -61,11 +61,7 @@ module HappyMapper
       @namespace
     end
 
-    # Options:
-    #   :root => Boolean, true means this is xml root
-    def tag(new_tag_name, o={})
-      options = {:root => false}.merge(o)
-      @root = options.delete(:root)
+    def tag(new_tag_name)
       @tag_name = new_tag_name.to_s
     end
     

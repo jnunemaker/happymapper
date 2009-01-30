@@ -7,7 +7,7 @@ module GitHub
   class Commit
     include HappyMapper
 
-    tag "commit", :root => true
+    tag "commit"
     element :url, String
     element :tree, String
     element :message, String
