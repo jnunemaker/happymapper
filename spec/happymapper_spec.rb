@@ -307,17 +307,17 @@ describe HappyMapper do
     end
 
     it "should default tag name to lowercase class" do
-      Foo.get_tag_name.should == 'foo'
+      Foo.tag_name.should == 'foo'
     end
     
     it "should default tag name of class in modules to the last constant lowercase" do
       module Bar; class Baz; include HappyMapper; end; end
-      Bar::Baz.get_tag_name.should == 'baz'
+      Bar::Baz.tag_name.should == 'baz'
     end
     
     it "should allow setting tag name" do
       Foo.tag('FooBar')
-      Foo.get_tag_name.should == 'FooBar'
+      Foo.tag_name.should == 'FooBar'
     end
     
     it "should allow setting a namespace" do
