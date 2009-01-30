@@ -4,11 +4,8 @@ $:.unshift(dir) unless $:.include?(dir) || $:.include?(File.expand_path(dir))
 require 'date'
 require 'time'
 require 'rubygems'
-
 gem 'libxml-ruby', '= 0.9.8'
 require 'xml'
-require 'libxml_ext/libxml_helper'
-
 
 class Boolean; end
 
@@ -79,7 +76,7 @@ module HappyMapper
         if xml.is_a?(XML::Document)
           node = xml.root
         else
-          node = xml.to_libxml_doc.root
+          node = XML::Parser.string(xml).parse.root
         end
 
         root = node.name == tag_name

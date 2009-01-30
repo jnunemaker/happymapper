@@ -2,15 +2,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{happymapper}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["John Nunemaker"]
   s.date = %q{2009-01-29}
   s.description = %q{object to xml mapping library}
   s.email = %q{nunemaker@gmail.com}
-  s.extra_rdoc_files = ["lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/happymapper.rb", "lib/libxml_ext/libxml_helper.rb", "README", "TODO"]
-  s.files = ["examples/amazon.rb", "examples/current_weather.rb", "examples/dashed_elements.rb", "examples/post.rb", "examples/twitter.rb", "happymapper.gemspec", "History", "lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/happymapper.rb", "lib/libxml_ext/libxml_helper.rb", "License", "Manifest", "Rakefile", "README", "spec/fixtures/address.xml", "spec/fixtures/commit.xml", "spec/fixtures/current_weather.xml", "spec/fixtures/family_tree.xml", "spec/fixtures/multiple_namespaces.xml", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/product_default_namespace.xml", "spec/fixtures/product_no_namespace.xml", "spec/fixtures/product_single_namespace.xml", "spec/fixtures/radar.xml", "spec/fixtures/statuses.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "TODO", "website/css/common.css", "website/index.html"]
+  s.extra_rdoc_files = ["lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/happymapper.rb", "README", "TODO"]
+  s.files = ["examples/amazon.rb", "examples/current_weather.rb", "examples/dashed_elements.rb", "examples/post.rb", "examples/twitter.rb", "happymapper.gemspec", "History", "lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/happymapper.rb", "License", "Manifest", "Rakefile", "README", "spec/fixtures/address.xml", "spec/fixtures/commit.xml", "spec/fixtures/current_weather.xml", "spec/fixtures/family_tree.xml", "spec/fixtures/multiple_namespaces.xml", "spec/fixtures/pita.xml", "spec/fixtures/posts.xml", "spec/fixtures/product_default_namespace.xml", "spec/fixtures/product_no_namespace.xml", "spec/fixtures/product_single_namespace.xml", "spec/fixtures/radar.xml", "spec/fixtures/statuses.xml", "spec/happymapper_attribute_spec.rb", "spec/happymapper_element_spec.rb", "spec/happymapper_item_spec.rb", "spec/happymapper_spec.rb", "spec/spec.opts", "spec/spec_helper.rb", "TODO", "website/css/common.css", "website/index.html"]
   s.has_rdoc = true
   s.homepage = %q{http://happymapper.rubyforge.org}
   s.post_install_message = %q{May you have many happy mappings!}
