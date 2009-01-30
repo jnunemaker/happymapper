@@ -65,10 +65,8 @@ module HappyMapper
       @tag_name = new_tag_name.to_s
     end
     
-    def get_tag_name
-      @tag_name ||= begin
-        to_s.split('::')[-1].downcase
-      end
+    def tag_name
+      @tag_name ||= to_s.split('::')[-1].downcase
     end
         
     def parse(xml, options = {})
@@ -84,7 +82,7 @@ module HappyMapper
           node = xml.to_libxml_doc.root
         end
 
-        root = node.name == get_tag_name
+        root = node.name == tag_name
       end
 
       # This is the entry point into the parsing pipeline, so the default
@@ -97,7 +95,7 @@ module HappyMapper
 
       xpath = root ? '/' : './/'
       xpath += "#{namespace}:" if namespace
-      xpath += get_tag_name
+      xpath += tag_name
       # puts "parse: #{xpath}"
       
       nodes = node.find(xpath)
