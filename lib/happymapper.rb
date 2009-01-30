@@ -117,7 +117,6 @@ module HappyMapper
 
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
       nodes = nil
-      GC.start
 
       if options[:single] || root
         collection.first
