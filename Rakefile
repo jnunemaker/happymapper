@@ -13,7 +13,7 @@ Echoe.new(ProjectName, HappyMapper::Version) do |p|
   p.url             = "http://#{ProjectName}.rubyforge.org"
   p.author          = "John Nunemaker"
   p.email           = "nunemaker@gmail.com"
-  p.extra_deps      = [['libxml-ruby', '>= 0.9.7']]
+  p.extra_deps      = [['libxml-ruby', '= 0.9.8']]
   p.need_tar_gz     = false
   p.docs_host       = WebsitePath
 end

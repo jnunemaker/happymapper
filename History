@@ -1,3 +1,10 @@
+== 0.2.1
+* 1 minor fix, 3 major enhancements
+  * fixed warnings about using XML::Parser (mojodna)
+  * Improved namespace support, now handles multiple namespaces and allows namespaces to be set item wide or on a per element basis (mojodna)
+  * Auto detect root nodes (mojodna)
+  * Type coercion (mojodna)
+  
 == 0.2.0
 * 1 major enhancement, 2 minor ehancements
   * Automatic handling of namespaces (part by Robert Lowrey and rest by John Nunemaker)
