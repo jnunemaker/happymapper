@@ -75,24 +75,20 @@ module HappyMapper
       end
     end
         
-    def is_root?
-      @root
-    end
-    
-    def parse(xml, o={})      
-      xpath, collection, options = '', [], {:single => false}.merge(o)
-
-      # reset the namespace if it was set to the default
-      # this is necessary when using the same object mapping instance for
-      # docs w/ and w/o default namespaces
-      @namespace = nil if @namespace == DEFAULT_NS
+    def parse(xml, options = {})
+      # locally scoped copy of namespace for this parse run
+      namespace = @namespace
 
       if xml.is_a?(XML::Node)
         node = xml
-      elsif xml.is_a?(XML::Document)
-        node = xml.root
       else
-        node = xml.to_libxml_doc.root
+        if xml.is_a?(XML::Document)
+          node = xml.root
+        else
+          node = xml.to_libxml_doc.root
+        end
+
+        root = node.name == get_tag_name
       end
 
       # This is the entry point into the parsing pipeline, so the default
@@ -100,36 +96,40 @@ module HappyMapper
       namespaces = node.namespaces
       if namespaces && namespaces.default
         namespaces.default_prefix = DEFAULT_NS
-        @namespace ||= DEFAULT_NS
+        namespace ||= DEFAULT_NS
       end
 
-      xpath += is_root? ? '/' : './/'
+      xpath = root ? '/' : './/'
       xpath += "#{namespace}:" if namespace
       xpath += get_tag_name
       # puts "parse: #{xpath}"
       
       nodes = node.find(xpath)
-      nodes.each do |n|
+      collection = nodes.collect do |n|
         obj = new
         
         attributes.each do |attr| 
           obj.send("#{attr.method_name}=", 
-                    attr.from_xml_node(n))
+                    attr.from_xml_node(n, namespace))
         end
         
         elements.each do |elem|
-          elem.namespace ||= namespace
           obj.send("#{elem.method_name}=", 
-                    elem.from_xml_node(n))
+                    elem.from_xml_node(n, namespace))
         end
-        collection << obj
+
+        obj
       end
 
       # per http://libxml.rubyforge.org/rdoc/classes/LibXML/XML/Document.html#M000354
       nodes = nil
       GC.start
 
-      options[:single] || is_root? ? collection.first : collection
+      if options[:single] || root
+        collection.first
+      else
+        collection
+      end
     end
   end
 end
