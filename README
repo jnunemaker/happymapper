@@ -11,16 +11,51 @@ should also point you in the right direction.
 * Fast because it uses libxml-ruby under the hood
 * Automatic conversion of xml to defined objects
 
-== SYNOPSIS:
+== EXAMPLES:
 
-See examples directory in the gem to get a feel for how it works.
+Here is a simple example that maps Twitter statuses and users.
+
+  class User
+    include HappyMapper
+
+    element :id, Integer
+    element :name, String
+    element :screen_name, String
+    element :location, String
+    element :description, String
+    element :profile_image_url, String
+    element :url, String
+    element :protected, Boolean
+    element :followers_count, Integer
+  end
+
+  class Status
+    include HappyMapper
+
+    element :id, Integer
+    element :text, String
+    element :created_at, Time
+    element :source, String
+    element :truncated, Boolean
+    element :in_reply_to_status_id, Integer
+    element :in_reply_to_user_id, Integer
+    element :favorited, Boolean
+    has_one :user, User
+  end
+
+See examples directory in the gem for more examples.
+
+http://github.com/jnunemaker/happymapper/tree/master/examples/
 
 == INSTALL:
 
-* add github to your sources if you haven't gem sources -a http://gems.github.com
-* sudo gem install jnunemaker-happymapper
+* sudo gem install jnunemaker-happymapper -s http://gems.github.com
 * sudo gem install happymapper (when rubyforge approves and i release there)
 
 == TICKETS:
 
 http://github.com/jnunemaker/happymapper/issues/
+
+== DOCS:
+
+http://rdoc.info/projects/jnunemaker/happymapper
