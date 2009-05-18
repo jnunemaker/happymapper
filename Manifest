@@ -15,6 +15,7 @@ Manifest
 Rakefile
 README
 spec/fixtures/address.xml
+spec/fixtures/analytics.xml
 spec/fixtures/commit.xml
 spec/fixtures/current_weather.xml
 spec/fixtures/family_tree.xml
