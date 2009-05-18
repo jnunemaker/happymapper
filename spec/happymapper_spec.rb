@@ -2,6 +2,38 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'pp'
 require 'uri'
 
+module Analytics
+  class Property
+    include HappyMapper
+    
+    tag 'property'
+    namespace 'dxp'
+    attribute :name, String
+    attribute :value, String
+  end
+  
+  class Entry
+    include HappyMapper
+    
+    tag 'entry'
+    element :id, String
+    element :updated, DateTime
+    element :title, String
+    element :table_id, String, :namespace => 'dxp', :tag => 'tableId'
+    has_many :properties, Property
+  end
+  
+  class Feed
+    include HappyMapper
+    
+    tag 'feed'
+    element :id, String
+    element :updated, DateTime
+    element :title, String
+    has_many :entries, Entry
+  end
+end
+
 class Feature
   include HappyMapper
   element :name, String, :tag => '.|.//text()'
@@ -503,6 +535,20 @@ describe HappyMapper do
     last_event.address.state.should == 'FL'
     last_event.address.zip.should == '327506398'
     track.tran_detail.cust_tran_id.should == '20090102-111321'
+  end
+  
+  it "should be able to parse google analytics api xml" do
+    data = Analytics::Feed.parse(fixture_file('analytics.xml'))
+    data.id.should == 'http://www.google.com/analytics/feeds/accounts/nunemaker@gmail.com'
+    data.entries.size.should == 4
+    
+    entry = data.entries[0]
+    entry.title.should == 'addictedtonew.com'
+    entry.properties.size.should == 4
+    
+    property = entry.properties[0]
+    property.name.should == 'ga:accountId'
+    property.value.should == '85301'
   end
   
   xit "should parse family search xml" do

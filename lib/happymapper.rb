@@ -1,5 +1,4 @@
 dir = File.dirname(__FILE__)
-$:.unshift(dir) unless $:.include?(dir) || $:.include?(File.expand_path(dir))
 
 require 'date'
 require 'time'
@@ -86,14 +85,16 @@ module HappyMapper
       # namespace prefix registered here will propagate down
       namespaces = node.namespaces
       if namespaces && namespaces.default
-        namespaces.default_prefix = DEFAULT_NS
+        already_assigned = namespaces.definitions.detect do |defn|
+          namespaces.default && namespaces.default.href == defn.href && defn.prefix
+        end
+        namespaces.default_prefix = DEFAULT_NS unless already_assigned
         namespace ||= DEFAULT_NS
       end
 
       xpath = root ? '/' : './/'
       xpath += "#{namespace}:" if namespace
       xpath += tag_name
-      # puts "parse: #{xpath}"
       
       nodes = node.find(xpath)
       collection = nodes.collect do |n|
@@ -108,7 +109,7 @@ module HappyMapper
           obj.send("#{elem.method_name}=", 
                     elem.from_xml_node(n, namespace))
         end
-
+        
         obj
       end
 
@@ -124,6 +125,6 @@ module HappyMapper
   end
 end
 
-require 'happymapper/item'
-require 'happymapper/attribute'
-require 'happymapper/element'
+require File.join(dir, 'happymapper/item')
+require File.join(dir, 'happymapper/attribute')
+require File.join(dir, 'happymapper/element')
