@@ -4,7 +4,7 @@ $:.unshift(dir) unless $:.include?(dir) || $:.include?(File.expand_path(dir))
 require 'date'
 require 'time'
 require 'rubygems'
-gem 'libxml-ruby', '= 0.9.8'
+gem 'libxml-ruby', '= 1.1.3'
 require 'xml'
 
 class Boolean; end

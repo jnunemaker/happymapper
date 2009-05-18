@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{happymapper}
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["John Nunemaker"]
-  s.date = %q{2009-01-29}
+  s.date = %q{2009-05-17}
   s.description = %q{object to xml mapping library}
   s.email = %q{nunemaker@gmail.com}
   s.extra_rdoc_files = ["lib/happymapper/attribute.rb", "lib/happymapper/element.rb", "lib/happymapper/item.rb", "lib/happymapper/version.rb", "lib/happymapper.rb", "README", "TODO"]
@@ -25,14 +25,14 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<libxml-ruby>, ["= 0.9.8"])
+      s.add_runtime_dependency(%q<libxml-ruby>, ["= 1.1.3"])
       s.add_development_dependency(%q<echoe>, [">= 0"])
     else
-      s.add_dependency(%q<libxml-ruby>, ["= 0.9.8"])
+      s.add_dependency(%q<libxml-ruby>, ["= 1.1.3"])
       s.add_dependency(%q<echoe>, [">= 0"])
     end
   else
-    s.add_dependency(%q<libxml-ruby>, ["= 0.9.8"])
+    s.add_dependency(%q<libxml-ruby>, ["= 1.1.3"])
     s.add_dependency(%q<echoe>, [">= 0"])
   end
 end
