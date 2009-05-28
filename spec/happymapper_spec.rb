@@ -274,72 +274,76 @@ describe HappyMapper do
   
   describe "being included into another class" do
     before do
-      Foo.instance_variable_set("@attributes", {})
-      Foo.instance_variable_set("@elements", {})
+      @klass = Class.new do
+        include HappyMapper
+        
+        def self.to_s
+          'Foo'
+        end
+      end
     end
-    class Foo; include HappyMapper end
     
     it "should set attributes to an array" do
-      Foo.attributes.should == []
+      @klass.attributes.should == []
     end
     
     it "should set @elements to a hash" do
-      Foo.elements.should == []
+      @klass.elements.should == []
     end
     
     it "should allow adding an attribute" do
       lambda {
-        Foo.attribute :name, String
-      }.should change(Foo, :attributes)
+        @klass.attribute :name, String
+      }.should change(@klass, :attributes)
     end
     
     it "should allow adding an attribute containing a dash" do
       lambda {
-        Foo.attribute :'bar-baz', String
-      }.should change(Foo, :attributes)
+        @klass.attribute :'bar-baz', String
+      }.should change(@klass, :attributes)
     end
 
     it "should be able to get all attributes in array" do
-      Foo.attribute :name, String
-      Foo.attributes.size.should == 1
+      @klass.attribute :name, String
+      @klass.attributes.size.should == 1
     end
     
     it "should allow adding an element" do
       lambda {
-        Foo.element :name, String
-      }.should change(Foo, :elements)
+        @klass.element :name, String
+      }.should change(@klass, :elements)
     end
 
     it "should allow adding an element containing a dash" do
       lambda {
-        Foo.element :'bar-baz', String
-      }.should change(Foo, :elements)
+        @klass.element :'bar-baz', String
+      }.should change(@klass, :elements)
 
     end
     
     it "should be able to get all elements in array" do
-      Foo.element(:name, String)
-      Foo.elements.size.should == 1
+      @klass.element(:name, String)
+      @klass.elements.size.should == 1
     end
     
     it "should allow has one association" do
-      Foo.has_one(:user, User)
-      element = Foo.elements.first
+      @klass.has_one(:user, User)
+      element = @klass.elements.first
       element.name.should == 'user'
       element.type.should == User
       element.options[:single] = true
     end
     
     it "should allow has many association" do
-      Foo.has_many(:users, User)
-      element = Foo.elements.first
+      @klass.has_many(:users, User)
+      element = @klass.elements.first
       element.name.should == 'users'
       element.type.should == User
       element.options[:single] = false
     end
 
     it "should default tag name to lowercase class" do
-      Foo.tag_name.should == 'foo'
+      @klass.tag_name.should == 'foo'
     end
     
     it "should default tag name of class in modules to the last constant lowercase" do
@@ -348,17 +352,17 @@ describe HappyMapper do
     end
     
     it "should allow setting tag name" do
-      Foo.tag('FooBar')
-      Foo.tag_name.should == 'FooBar'
+      @klass.tag('FooBar')
+      @klass.tag_name.should == 'FooBar'
     end
     
     it "should allow setting a namespace" do
-      Foo.namespace(namespace = "foo")
-      Foo.namespace.should == namespace
+      @klass.namespace(namespace = "foo")
+      @klass.namespace.should == namespace
     end
 
     it "should provide #parse" do
-      Foo.should respond_to(:parse)
+      @klass.should respond_to(:parse)
     end
   end
   
@@ -549,6 +553,19 @@ describe HappyMapper do
     property = entry.properties[0]
     property.name.should == 'ga:accountId'
     property.value.should == '85301'
+  end
+  
+  it "should allow instantiating with a string" do
+    module StringFoo
+      class Bar
+        include HappyMapper
+        has_many :things, 'StringFoo::Thing'
+      end
+      
+      class Thing
+        include HappyMapper
+      end
+    end
   end
   
   xit "should parse family search xml" do

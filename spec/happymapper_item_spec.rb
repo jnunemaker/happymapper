@@ -1,5 +1,9 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
+module Foo
+  class Bar; end
+end
+
 describe HappyMapper::Item do
   
   describe "new instance" do
@@ -21,6 +25,23 @@ describe HappyMapper::Item do
     
     it "should have a method_name" do
       @item.method_name.should == 'foo'
+    end
+  end
+  
+  describe "#constant" do
+    it "should just use type if constant" do
+      item = HappyMapper::Item.new(:foo, String)
+      item.constant.should == String
+    end
+    
+    it "should convert string type to constant" do
+      item = HappyMapper::Item.new(:foo, 'String')
+      item.constant.should == String
+    end
+    
+    it "should convert string with :: to constant" do
+      item = HappyMapper::Item.new(:foo, 'Foo::Bar')
+      item.constant.should == Foo::Bar
     end
   end
   

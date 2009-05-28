@@ -1,3 +1,11 @@
+== 0.2.5
+* 1 minor tweak
+  * Classes can now be strings instead of constants so you don't have to worry about class definition order (this was all for technicalpickles, enjoy!)
+  
+== 0.2.4
+* 1 minor tweak
+  * Added a patch that allows even crazy namespaces to work
+  
 == 0.2.3
 * 1 minor tweak
   * bumped the version of libxml-ruby to 1.1.3
