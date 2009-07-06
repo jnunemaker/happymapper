@@ -137,10 +137,22 @@ module HappyMapper
         end
 
         if element?
-          result = node.find_first(xpath(namespace), namespace)
+          if(options[:single].nil? || options[:single])
+            result = node.find_first(xpath(namespace), namespace)
+          else
+            result = node.find(xpath(namespace))
+          end
           # puts "vfxn: #{xpath} #{result.inspect}"
           if result
-            value = yield(result)
+            if(options[:single].nil? || options[:single])
+              value = yield(result)
+            else
+              value = []
+
+              result.each do |res|
+                value << yield(res)
+              end
+            end
             if options[:attributes].is_a?(Hash)
               result.attributes.each do |xml_attribute|
                 if attribute_options = options[:attributes][xml_attribute.name.to_sym]
