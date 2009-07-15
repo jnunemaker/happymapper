@@ -7,7 +7,7 @@ module Analytics
     include HappyMapper
     
     tag 'property'
-    namespace 'dxp'
+    namespace 'http://schemas.google.com/analytics/2009'
     attribute :name, String
     attribute :value, String
   end
@@ -19,7 +19,7 @@ module Analytics
     element :id, String
     element :updated, DateTime
     element :title, String
-    element :table_id, String, :namespace => 'dxp', :tag => 'tableId'
+    element :table_id, String, :namespace => 'http://schemas.google.com/analytics/2009', :tag => 'tableId'
     has_many :properties, Property
   end
   
@@ -84,7 +84,7 @@ module FedEx
     include HappyMapper
     
     tag 'Address'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element :city, String, :tag => 'City'
     element :state, String, :tag => 'StateOrProvinceCode'
     element :zip, String, :tag => 'PostalCode'
@@ -96,7 +96,7 @@ module FedEx
     include HappyMapper
     
     tag 'Events'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element :timestamp, String, :tag => 'Timestamp'
     element :eventtype, String, :tag => 'EventType'
     element :eventdescription, String, :tag => 'EventDescription'
@@ -107,7 +107,7 @@ module FedEx
     include HappyMapper
     
     tag 'PackageWeight'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element :units, String, :tag => 'Units'
     element :value, Integer, :tag => 'Value'
   end
@@ -116,7 +116,7 @@ module FedEx
     include HappyMapper
     
     tag 'TrackDetails'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element   :tracking_number, String, :tag => 'TrackingNumber'
     element   :status_code, String, :tag => 'StatusCode'
     element   :status_desc, String, :tag => 'StatusDescription'
@@ -131,7 +131,7 @@ module FedEx
     include HappyMapper
     
     tag 'Notifications'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element :severity, String, :tag => 'Severity'
     element :source, String, :tag => 'Source'
     element :code, Integer, :tag => 'Code'
@@ -143,7 +143,7 @@ module FedEx
     include HappyMapper
     
     tag 'TransactionDetail'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element :cust_tran_id, String, :tag => 'CustomerTransactionId'
   end
   
@@ -151,7 +151,7 @@ module FedEx
     include HappyMapper
     
     tag 'TrackReply'
-    namespace 'v2'
+    namespace 'http://fedex.com/ws/track/v2'
     element   :highest_severity, String, :tag => 'HighestSeverity'
     element   :more_data, Boolean, :tag => 'MoreData'
     has_many  :notifications, Notification, :tag => 'Notifications'
@@ -215,7 +215,7 @@ class CurrentWeather
   include HappyMapper
   
   tag 'ob'
-  namespace 'aws'
+  namespace 'http://www.aws.com/aws'
   element :temperature, Integer, :tag => 'temp'
   element :feels_like, Integer, :tag => 'feels-like'
   element :current_condition, String, :tag => 'current-condition', :attributes => {:icon => String}
@@ -243,7 +243,7 @@ module PITA
     element :asin, String, :tag => 'ASIN'
     element :detail_page_url, URI, :tag => 'DetailPageURL', :parser => :parse
     element :manufacturer, String, :tag => 'Manufacturer', :deep => true
-    element :point, String, :tag => 'point', :namespace => 'georss'
+    element :point, String, :tag => 'point', :namespace => 'http://www.georss.org/georss'
     element :product_group, ProductGroup, :tag => 'ProductGroup', :deep => true, :parser => :new, :raw => true
   end
 
@@ -579,13 +579,20 @@ describe HappyMapper do
     # tree.people.first.id.should == 'KWQS-BBQ'
   end
   
-  describe '' do
+  describe 'nested elements with namespaces' do
     module Namespaces
+      class Info
+        include HappyMapper
+        namespace 'http://schemas.google.com/analytics/2009'
+        element :category, String
+      end
+      
       class Alert
         include HappyMapper
-        namespace 'ns1'
+        namespace 'http://schemas.google.com/analytics/2009'
 
         element :identifier, String
+        has_one :info, Info
       end
       class Distribution
         include HappyMapper
@@ -594,11 +601,21 @@ describe HappyMapper do
         has_one :alert, Alert
       end
     end
+    
+    def mapping
+      @mapping ||= Namespaces::Distribution.parse(fixture_file('nested_namespaces.xml'))
+    end
 
-    it "should parse documents with inline namespace" do
-      lambda {
-        Namespaces::Distribution.parse(fixture_file('nested_namespaces.xml'))
-      }.should_not raise_error
+    it "should parse elements with inline namespace" do
+      lambda { mapping }.should_not raise_error
+    end
+    
+    it "should map elements with inline namespace" do
+      mapping.alert.identifier.should == 'CDC-2006-183'
+    end
+    
+    it "should map sub elements of with nested namespace" do
+      mapping.alert.info.category.should == 'Health'
     end
   end
   

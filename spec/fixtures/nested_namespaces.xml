@@ -6,22 +6,8 @@
 			<embeddedXMLContent>
 				<ns1:alert xmlns:ns1="http://schemas.google.com/analytics/2009">
 					<ns1:identifier>CDC-2006-183</ns1:identifier>
-					<ns1:sender>2.16.840.1.114222.4.20.1.1</ns1:sender>
-					<ns1:sent>2006-11-07T21:25:16.5127Z </ns1:sent>
-					<ns1:status>Test</ns1:status>
-					<ns1:msgType>Update</ns1:msgType>
-					<ns1:references>2.16.840.1.114222.4.20.1.1,CDC-2006-182,2006-11-05T13:02:42.1219Z</ns1:references>
-					<ns1:scope>Restricted</ns1:scope>
 					<ns1:info>
 						<ns1:category>Health</ns1:category>
-						<ns1:event>HAN</ns1:event>
-						<ns1:urgency>Expected</ns1:urgency>
-						<ns1:severity>Severe</ns1:severity>
-						<ns1:certainty>Very Likely</ns1:certainty>
-						<ns1:senderName>Centers for Disease Control and Prevention</ns1:senderName>
-						<ns1:headline>Cases of Vibrio vulnificus identified among Hurrican Katrina evacuees</ns1:headline>
-						<ns1:description>To date, seven people in the area effected by Hurricane Katrina have been reported ill from the bacterial disease Vibrio vulnificus.</ns1:description>
-						<ns1:instruction>Please distribute to health providers and officials within your jurisdiction as deemed appropriate</ns1:instruction>
 					</ns1:info>
 				</ns1:alert>
 			</embeddedXMLContent>

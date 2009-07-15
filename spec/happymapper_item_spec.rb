@@ -65,8 +65,8 @@ describe HappyMapper::Item do
     
     it "should prepend namespace if namespace exists" do
       item = HappyMapper::Item.new(:foo, String, :tag => 'foobar')
-      item.namespace = 'v2'
-      item.xpath.should == 'v2:foobar'
+      item.namespace = 'http://example.com'
+      item.xpath.should == 'happymapper:foobar'
     end
   end
   

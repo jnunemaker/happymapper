@@ -66,9 +66,6 @@ module HappyMapper
     end
         
     def parse(xml, options = {})
-      # locally scoped copy of namespace for this parse run
-      namespace = @namespace
-
       if xml.is_a?(XML::Node)
         node = xml
       else
@@ -81,22 +78,14 @@ module HappyMapper
         root = node.name == tag_name
       end
 
-      # This is the entry point into the parsing pipeline, so the default
-      # namespace prefix registered here will propagate down
-      namespaces = node.namespaces
-      if namespaces && namespaces.default
-        already_assigned = namespaces.definitions.detect do |defn|
-          namespaces.default && namespaces.default.href == defn.href && defn.prefix
-        end
-        namespaces.default_prefix = DEFAULT_NS unless already_assigned
-        namespace ||= DEFAULT_NS
-      end
+      namespace = @namespace || (node.namespaces && node.namespaces.default)
+      namespace = "#{DEFAULT_NS}:#{namespace}" if namespace
 
       xpath = root ? '/' : './/'
-      xpath += "#{namespace}:" if namespace
+      xpath += "#{DEFAULT_NS}:" if namespace
       xpath += tag_name
       
-      nodes = node.find(xpath)
+      nodes = node.find(xpath, Array(namespace))
       collection = nodes.collect do |n|
         obj = new
         

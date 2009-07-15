@@ -59,7 +59,7 @@ module HappyMapper
     def xpath(namespace = self.namespace)
       xpath  = ''
       xpath += './/' if options[:deep]
-      xpath += "#{namespace}:" if namespace
+      xpath += "#{DEFAULT_NS}:" if namespace
       xpath += tag
       # puts "xpath: #{xpath}"
       xpath
@@ -129,16 +129,15 @@ module HappyMapper
       
       def find(node, namespace, &block)
         # this node has a custom namespace (that is present in the doc)
-        if self.namespace && node.namespaces.find_by_prefix(self.namespace)
-          # from the class definition
-          namespace = self.namespace
-        elsif options[:namespace] && node.namespaces.find_by_prefix(options[:namespace])
+        if self.namespace
+          namespace = "#{DEFAULT_NS}:#{self.namespace}"
+        elsif options[:namespace]
           # from an element definition
-          namespace = options[:namespace]
+          namespace = "#{DEFAULT_NS}:#{options[:namespace]}"
         end
 
         if element?
-          result = node.find_first(xpath(namespace))
+          result = node.find_first(xpath(namespace), namespace)
           # puts "vfxn: #{xpath} #{result.inspect}"
           if result
             value = yield(result)
