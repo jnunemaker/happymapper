@@ -578,4 +578,28 @@ describe HappyMapper do
     # tree.people.first.modified.should == Time.utc(2008, 1, 3, 16, 41, 31) # 2008-01-03T09:41:31-07:00
     # tree.people.first.id.should == 'KWQS-BBQ'
   end
+  
+  describe '' do
+    module Namespaces
+      class Alert
+        include HappyMapper
+        namespace 'ns1'
+
+        element :identifier, String
+      end
+      class Distribution
+        include HappyMapper
+
+        tag 'EDXLDistribution'
+        has_one :alert, Alert
+      end
+    end
+
+    it "should parse documents with inline namespace" do
+      lambda {
+        Namespaces::Distribution.parse(fixture_file('nested_namespaces.xml'))
+      }.should_not raise_error
+    end
+  end
+  
 end
