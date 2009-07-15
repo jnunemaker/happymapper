@@ -592,6 +592,7 @@ describe HappyMapper do
         namespace 'http://schemas.google.com/analytics/2009'
 
         element :identifier, String
+        element :severity, String, :namespace => false
         has_one :info, Info
       end
       class Distribution
@@ -616,6 +617,10 @@ describe HappyMapper do
     
     it "should map sub elements of with nested namespace" do
       mapping.alert.info.category.should == 'Health'
+    end
+
+    it "should map elements without a namespace" do
+      mapping.alert.severity.should == 'Severe'
     end
   end
   
