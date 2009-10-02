@@ -128,14 +128,16 @@ module HappyMapper
       end
       
       def find(node, namespace, &block)
-        # this node has a custom namespace (that is present in the doc)
-        if self.namespace
-          namespace = "#{DEFAULT_NS}:#{self.namespace}"
+        if options[:namespace] == false
+          namespace = nil
         elsif options[:namespace]
           # from an element definition
           namespace = "#{DEFAULT_NS}:#{options[:namespace]}"
+        elsif self.namespace
+          # this node has a custom namespace (that is present in the doc)
+          namespace = "#{DEFAULT_NS}:#{self.namespace}"
         end
-
+        
         if element?
           if(options[:single].nil? || options[:single])
             result = node.find_first(xpath(namespace), namespace)
