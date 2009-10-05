@@ -1,0 +1,5 @@
+* Change lib/happymapper/version to new version.
+* rake prepare
+* git commit version bump
+* git push for github
+* rake release for rubyforge

@@ -1,3 +1,3 @@
 module HappyMapper
-  Version = '0.2.5'
+  Version = '0.3.0'
 end
