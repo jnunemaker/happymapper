@@ -2,8 +2,7 @@
 
 == DESCRIPTION:
 
-Object to xml mapping library. I have included examples to help get you going. The specs
-should also point you in the right direction.
+Object to xml mapping library. I have included examples to help get you going. The specs should also point you in the right direction.
 
 == FEATURES:
 
@@ -49,12 +48,7 @@ http://github.com/jnunemaker/happymapper/tree/master/examples/
 
 == INSTALL:
 
-* sudo gem install jnunemaker-happymapper -s http://gems.github.com
-* sudo gem install happymapper (when rubyforge approves and i release there)
-
-== TICKETS:
-
-http://github.com/jnunemaker/happymapper/issues/
+* gem install happymapper
 
 == DOCS:
 
