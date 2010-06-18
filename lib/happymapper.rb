@@ -1,9 +1,7 @@
-dir = File.dirname(__FILE__)
-
+require 'rubygems'
+gem 'libxml-ruby', '=1.1.3'
 require 'date'
 require 'time'
-require 'rubygems'
-gem 'libxml-ruby', '= 1.1.3'
 require 'xml'
 
 class Boolean; end
@@ -114,6 +112,6 @@ module HappyMapper
   end
 end
 
-require File.join(dir, 'happymapper/item')
-require File.join(dir, 'happymapper/attribute')
-require File.join(dir, 'happymapper/element')
+require 'happymapper/item'
+require 'happymapper/attribute'
+require 'happymapper/element'
