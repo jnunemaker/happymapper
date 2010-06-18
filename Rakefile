@@ -31,12 +31,6 @@ end
 desc 'Upload website files to rubyforge'
 task :website do
   sh %{rsync -av website/ jnunemaker@rubyforge.org:/var/www/gforge-projects/happymapper}
-  Rake::Task['website_docs'].invoke
-end
-
-task :website_docs do
-  Rake::Task['rerdoc'].invoke
-  sh %{rsync -av doc/ jnunemaker@rubyforge.org:/var/www/gforge-projects/happymapper/docs}
 end
 
 Rake::RDocTask.new do |r|
