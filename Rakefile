@@ -1,43 +1,47 @@
-ProjectName = 'happymapper'
-WebsitePath = "jnunemaker@rubyforge.org:/var/www/gforge-projects/#{ProjectName}"
-
 require 'rubygems'
 require 'rake'
-require 'echoe'
+require 'rake/rdoctask'
 require 'spec/rake/spectask'
-require "lib/#{ProjectName}/version"
+require File.expand_path('../lib/happymapper/version', __FILE__)
 
-Echoe.new(ProjectName, HappyMapper::Version) do |p|
-  p.description     = "object to xml mapping library"
-  p.install_message = "May you have many happy mappings!"
-  p.url             = "http://#{ProjectName}.rubyforge.org"
-  p.author          = "John Nunemaker"
-  p.email           = "nunemaker@gmail.com"
-  p.extra_deps      = [['libxml-ruby', '= 1.1.3']]
-  p.need_tar_gz     = false
-  p.docs_host       = WebsitePath
+Spec::Rake::SpecTask.new do |t|
+  t.ruby_opts << '-rubygems'
+  t.verbose = true
+end
+task :default => :spec
+
+desc 'Builds the gem'
+task :build do
+  sh "gem build happymapper.gemspec"
+end
+
+desc 'Builds and installs the gem'
+task :install => :build do
+  sh "gem install happymapper-#{HappyMapper::Version}"
+end
+
+desc 'Tags version, pushes to remote, and pushes gem'
+task :release => :build do
+  sh "git tag v#{HappyMapper::Version}"
+  sh "git push origin master"
+  sh "git push origin v#{HappyMapper::Version}"
+  sh "gem push bin-#{HappyMapper::Version}.gem"
 end
 
 desc 'Upload website files to rubyforge'
 task :website do
-  sh %{rsync -av website/ #{WebsitePath}}
+  sh %{rsync -av website/ jnunemaker@rubyforge.org:/var/www/gforge-projects/happymapper}
   Rake::Task['website_docs'].invoke
 end
 
 task :website_docs do
-  Rake::Task['redocs'].invoke
-  sh %{rsync -av doc/ #{WebsitePath}/docs}
+  Rake::Task['rerdoc'].invoke
+  sh %{rsync -av doc/ jnunemaker@rubyforge.org:/var/www/gforge-projects/happymapper/docs}
 end
 
-desc 'Preps the gem for a new release'
-task :prepare do
-  %w[manifest build_gemspec].each do |task|
-    Rake::Task[task].invoke
-  end
-end
-
-Rake::Task[:default].prerequisites.clear
-task :default => :spec
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList["spec/**/*_spec.rb"]
+Rake::RDocTask.new do |r|
+  r.title    = 'HappyMapper Docs'
+  r.main     = 'README.rdoc'
+  r.rdoc_dir = 'doc'
+  r.rdoc_files.include("README.rdoc", "lib/**/*.rb")
 end
