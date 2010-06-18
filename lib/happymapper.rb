@@ -1,5 +1,3 @@
-require 'rubygems'
-gem 'libxml-ruby', '=1.1.3'
 require 'date'
 require 'time'
 require 'xml'

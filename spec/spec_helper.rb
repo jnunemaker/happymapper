@@ -1,11 +1,4 @@
-begin
-  require 'spec'
-rescue LoadError
-  require 'rubygems'
-  gem 'rspec'
-  require 'spec'
-end
-
+require 'spec'
 require File.expand_path('../../lib/happymapper', __FILE__)
 
 def fixture_file(filename)
