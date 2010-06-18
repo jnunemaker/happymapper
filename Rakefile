@@ -25,7 +25,7 @@ task :release => :build do
   sh "git tag v#{HappyMapper::Version}"
   sh "git push origin master"
   sh "git push origin v#{HappyMapper::Version}"
-  sh "gem push bin-#{HappyMapper::Version}.gem"
+  sh "gem push happymapper-#{HappyMapper::Version}.gem"
 end
 
 desc 'Upload website files to rubyforge'
