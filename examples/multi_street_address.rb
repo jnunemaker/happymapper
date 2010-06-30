@@ -1,7 +1,7 @@
 dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 require File.join(dir, 'happymapper')
 
-file_contents = File.read(dir + '/../spec/fixtures/address_multi_street.xml')
+file_contents = File.read(dir + '/../spec/fixtures/multi_street_address.xml')
 
 class MultiStreetAddress
   include HappyMapper
