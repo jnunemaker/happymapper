@@ -2,7 +2,7 @@
 
 == DESCRIPTION:
 
-Object to xml mapping library. I have included examples to help get you going. The specs should also point you in the right direction.
+XML to object mapping library. I have included examples to help get you going. The specs should also point you in the right direction.
 
 == FEATURES:
 
