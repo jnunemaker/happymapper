@@ -270,6 +270,18 @@ module GitHub
   end
 end
 
+module Backpack
+  class Note
+    include HappyMapper
+
+    attribute :id, Integer
+    attribute :title, String
+    attribute :created_at, Date
+
+    content :body
+  end
+end
+
 describe HappyMapper do
   
   describe "being included into another class" do
@@ -290,7 +302,7 @@ describe HappyMapper do
     it "should set @elements to a hash" do
       @klass.elements.should == []
     end
-    
+
     it "should allow adding an attribute" do
       lambda {
         @klass.attribute :name, String
@@ -539,6 +551,21 @@ describe HappyMapper do
     last_event.address.state.should == 'FL'
     last_event.address.zip.should == '327506398'
     track.tran_detail.cust_tran_id.should == '20090102-111321'
+  end
+
+  it "should be able to parse from a node's content " do
+    notes = Backpack::Note.parse(fixture_file('notes.xml'))
+    notes.size.should == 2
+
+    note = notes[0]
+    note.id.should == 1132
+    note.title.should == 'My world!'
+    note.body.should include("It's a pretty place")
+
+    note = notes[1]
+    note.id.should == 1133
+    note.title.should == 'Your world!'
+    note.body.should include("Also pretty")
   end
   
   it "should be able to parse google analytics api xml" do

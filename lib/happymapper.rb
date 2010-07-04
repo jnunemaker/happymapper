@@ -32,6 +32,11 @@ module HappyMapper
       @elements[to_s] << element
       attr_accessor element.method_name.intern
     end
+
+    def content(name)
+      @content = name
+      attr_accessor name
+    end
     
     def elements
       @elements[to_s] || []
@@ -94,6 +99,8 @@ module HappyMapper
           obj.send("#{elem.method_name}=", 
                     elem.from_xml_node(n, namespace))
         end
+
+        obj.send("#{@content}=", n.content) if @content
         
         obj
       end
