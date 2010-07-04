@@ -13,7 +13,7 @@ module HappyMapper
     base.instance_variable_set("@elements", {})
     base.extend ClassMethods
   end
-  
+
   module ClassMethods
     def attribute(name, type, options={})
       attribute = Attribute.new(name, type, options)
@@ -21,11 +21,11 @@ module HappyMapper
       @attributes[to_s] << attribute
       attr_accessor attribute.method_name.intern
     end
-    
+
     def attributes
       @attributes[to_s] || []
     end
-    
+
     def element(name, type, options={})
       element = Element.new(name, type, options)
       @elements[to_s] ||= []
@@ -37,15 +37,23 @@ module HappyMapper
       @content = name
       attr_accessor name
     end
-    
+
+    def after_parse_callbacks
+      @after_parse_callbacks ||= []
+    end
+
+    def after_parse(&block)
+      after_parse_callbacks.push(block)
+    end
+
     def elements
       @elements[to_s] || []
     end
-    
+
     def has_one(name, type, options={})
       element name, type, {:single => true}.merge(options)
     end
-    
+
     def has_many(name, type, options={})
       element name, type, {:single => false}.merge(options)
     end
@@ -61,11 +69,11 @@ module HappyMapper
     def tag(new_tag_name)
       @tag_name = new_tag_name.to_s
     end
-    
+
     def tag_name
       @tag_name ||= to_s.split('::')[-1].downcase
     end
-        
+
     def parse(xml, options = {})
       if xml.is_a?(XML::Node)
         node = xml
@@ -85,23 +93,25 @@ module HappyMapper
       xpath = root ? '/' : './/'
       xpath += "#{DEFAULT_NS}:" if namespace
       xpath += tag_name
-      
+
       nodes = node.find(xpath, Array(namespace))
       collection = nodes.collect do |n|
         obj = new
-        
-        attributes.each do |attr| 
-          obj.send("#{attr.method_name}=", 
+
+        attributes.each do |attr|
+          obj.send("#{attr.method_name}=",
                     attr.from_xml_node(n, namespace))
         end
-        
+
         elements.each do |elem|
-          obj.send("#{elem.method_name}=", 
+          obj.send("#{elem.method_name}=",
                     elem.from_xml_node(n, namespace))
         end
 
         obj.send("#{@content}=", n.content) if @content
-        
+
+        obj.class.after_parse_callbacks.each { |callback| callback.call(obj) }
+
         obj
       end
 
