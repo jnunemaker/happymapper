@@ -242,6 +242,7 @@ end
 class MultiStreetAddress
   include HappyMapper
   
+  tag 'address'
   # allow primitive type to be collection
   has_many :street_address, String, :tag => "streetaddress"
   element :city, String
