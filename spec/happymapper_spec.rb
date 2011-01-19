@@ -142,7 +142,7 @@ describe HappyMapper do
     first.extended.should == 'ROXML is a Ruby library designed to make it easier for Ruby developers to work with XML. Using simple annotations, it enables Ruby classes to be custom-mapped to XML. ROXML takes care of the marshalling and unmarshalling of mapped attributes so that developers can focus on building first-class Ruby classes.'
   end
 
-  it "should parse xml elements to ruby objcts" do
+  it "should parse xml elements to ruby objects" do
     statuses = Status.parse(fixture_file('statuses.xml'))
     statuses.size.should == 20
     first = statuses.first

@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'date'
 require 'time'
 require 'xml'
@@ -127,6 +128,6 @@ module HappyMapper
   end
 end
 
-require 'happymapper/item'
-require 'happymapper/attribute'
-require 'happymapper/element'
+require File.dirname(__FILE__) + '/happymapper/item'
+require File.dirname(__FILE__) + '/happymapper/attribute'
+require File.dirname(__FILE__) + '/happymapper/element'
