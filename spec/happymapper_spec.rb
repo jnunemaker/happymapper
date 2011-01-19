@@ -172,6 +172,13 @@ describe HappyMapper do
     address.city.should == 'Oldenburg'
     address.country.should == 'Germany'
   end
+  
+  it "should parse xml containing a has many relationship with primitive types" do
+    address = MultiStreetAddress.parse(fixture_file('multi_street_address.xml'), :single => true)
+    address.should_not be_nil
+    address.street_address.first.should == "123 Smith Dr"
+    address.street_address.last.should == "Apt 31"
+  end
 
   it "should parse xml with default namespace (amazon)" do
     file_contents = fixture_file('pita.xml')

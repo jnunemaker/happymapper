@@ -239,6 +239,17 @@ class Address
   element :country, String
 end
 
+class MultiStreetAddress
+  include HappyMapper
+  
+  # allow primitive type to be collection
+  has_many :street_address, String, :tag => "streetaddress"
+  element :city, String
+  element :state_or_providence, String, :tag => "stateOfProvidence"
+  element :zip, String
+  element :country, String
+end
+
 # for type coercion
 class ProductGroup < String; end
 
