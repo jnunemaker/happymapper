@@ -13,3 +13,17 @@ class MultiStreetAddress
   element :zip, String
   element :country, String
 end
+
+MultiStreetAddress.parse(file_contents).each do |multi|
+  
+  puts "Street Address:"
+  
+  multi.street_address.each do |street|
+    puts street
+  end
+  
+  puts "City: #{multi.city}"
+  puts "State/Province: #{multi.state_or_province}"
+  puts "Zip: #{multi.zip}"
+  puts "Country: #{multi.country}"
+end
