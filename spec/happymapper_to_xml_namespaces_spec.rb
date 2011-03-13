@@ -95,49 +95,47 @@ module ToXMLWithNamespaces
         'country' => Country.new(:name => 'USA', :code => 'us'),
         'date_created' => '2011-01-01 15:00:00')
         
-        
         address.dates_updated = ["2011-01-01 16:01:00","2011-01-02 11:30:01"]
-        puts address.to_xml
         
         @address_xml = XML::Parser.string(address.to_xml).parse.root
       end
       
-      # { 'street' => 'Mockingbird Lane',
-      #   'postcode' => '98103',
-      #   'city' => 'Seattle' }.each_pair do |property,value|
-      #   
-      #   it "should have the element '#{property}' with the value '#{value}'" do
-      #     @address_xml.find("address:#{property}").first.child.to_s.should == value
-      #   end
-      #   
-      # end
-      # 
-      # it "should use the result of #housenumber method (not the @housenumber)" do
-      #   @address_xml.find("address:housenumber").first.child.to_s.should == "[1313]"
-      # end
-      # 
-      # it "should have the attribute 'location' with the value 'Home'" do
-      #   @address_xml.find('@location').first.child.to_s.should == "Home"
-      # end
-      # 
-      # it "should add an empty description element" do
-      #   @address_xml.find('address:description').first.child.to_s.should == ""
-      # end
-      # 
-      # it "should call #on_save when saving the time to convert the time" do
-      #   @address_xml.find('address:date_created').first.child.to_s.should == "15:00:00 01/01/11"
-      # end
-      # 
-      # it "should handle multiple elements for 'has_many'" do
-      #   dates_updated = @address_xml.find('address:dates_updated')
-      #   dates_updated.length.should == 2
-      #   dates_updated.first.child.to_s.should == "16:01:00 01/01/11"
-      #   dates_updated.last.child.to_s.should == "11:30:01 01/02/11"
-      # end
-      # 
-      # it "should write the country code" do
-      #   @address_xml.find('country:country/@country:countryCode').first.child.to_s.should == "us"
-      # end
+      { 'street' => 'Mockingbird Lane',
+        'postcode' => '98103',
+        'city' => 'Seattle' }.each_pair do |property,value|
+        
+        it "should have the element '#{property}' with the value '#{value}'" do
+          @address_xml.find("address:#{property}").first.child.to_s.should == value
+        end
+        
+      end
+      
+      it "should use the result of #housenumber method (not the @housenumber)" do
+        @address_xml.find("address:housenumber").first.child.to_s.should == "[1313]"
+      end
+      
+      it "should have the attribute 'location' with the value 'Home'" do
+        @address_xml.find('@location').first.child.to_s.should == "Home"
+      end
+      
+      it "should add an empty description element" do
+        @address_xml.find('address:description').first.child.to_s.should == ""
+      end
+      
+      it "should call #on_save when saving the time to convert the time" do
+        @address_xml.find('address:date_created').first.child.to_s.should == "15:00:00 01/01/11"
+      end
+      
+      it "should handle multiple elements for 'has_many'" do
+        dates_updated = @address_xml.find('address:dates_updated')
+        dates_updated.length.should == 2
+        dates_updated.first.child.to_s.should == "16:01:00 01/01/11"
+        dates_updated.last.child.to_s.should == "11:30:01 01/02/11"
+      end
+      
+      it "should write the country code" do
+        @address_xml.find('country:country/@country:countryCode').first.child.to_s.should == "us"
+      end
       
       it "should write the country name" do
         @address_xml.find('country:country/countryName:countryName').first.child.to_s.should == "USA"

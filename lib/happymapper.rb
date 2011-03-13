@@ -140,79 +140,103 @@ module HappyMapper
   # that it can be called recursively by classes that are also HappyMapper
   # classes, allowg for the composition of classes.
   #
-  def to_xml(node = nil, default_namespace = nil)
-
-    
-    #
-    # If to_xml has been called without a Node (and namespace) that
-    # means we are going to return an xml document. When it has been called 
-    # with a Node instance that means this method is being called recursively
-    # and will return the node with elements defined here attached.
-    #
-    unless node
-      write_out_to_xml = true
-      node = XML::Node.new(self.class.tag_name)
-    end
+  def to_xml(parent_node = nil, default_namespace = nil)
 
     #
     # Create a tag that uses the tag name of the class that has no contents
     # but has the specified namespace or uses the default namespace
     #
-    child_node = XML::Node.new(self.class.tag_name)
+    current_node = XML::Node.new(self.class.tag_name)
+
+
+    if parent_node
+      #
+      # if #to_xml has been called with a parent_node that means this method
+      # is being called recursively (or a special case) and we want to return
+      # the parent_node with the new node as a child
+      #
+      parent_node << current_node
+    else
+      #
+      # If #to_xml has been called without a Node (and namespace) that
+      # means we want to return an xml document
+      #
+      write_out_to_xml = true
+    end
     
     #
-    # For all the registered namespaces, add them to node
+    # Add all the registered namespaces to the current node and the current node's
+    # root element. Without adding it to the root element it is not possible to
+    # parse or use xpath to find elements.
     #
     if self.class.instance_variable_get('@registered_namespaces')
-
-      root_node = node
-
-      while root_node.parent?
-        root_node = root_node.parent
-      end
       
+      # Given a node, continue moving up to parents until there are no more parents
+      find_root_node = lambda {|node| while node.parent? ; node = node.parent ; end ; node }
+      root_node = find_root_node.call(current_node)
+      
+      # Add the registered namespace to the found root node only if it does not already have one defined
       self.class.instance_variable_get('@registered_namespaces').each_pair do |prefix,href|
-        XML::Namespace.new(child_node,prefix,href)
+        XML::Namespace.new(current_node,prefix,href)
         XML::Namespace.new(root_node,prefix,href) unless root_node.namespaces.find_by_prefix(prefix)
       end
     end
 
     #
-    # When there is a defined namespace or one passed to the #to_xml method
-    # then create and set that namespace as the default namespace for the node
+    # Determine the tag namespace if one has been specified. This value takes
+    # precendence over one that is handed down to composed sub-classes.
     #
-    tag_namespace = child_node.namespaces.find_by_prefix(self.class.namespace) || default_namespace
+    tag_namespace = current_node.namespaces.find_by_prefix(self.class.namespace) || default_namespace
     
-    if tag_namespace
-      child_node.namespaces.namespace = tag_namespace
-      #XML::Namespace.new(child_node,tag_namespace,self.class.instance_variable_get('@registered_namespaces')[tag_namespace])
-      #child_node.namespaces.default_prefix = tag_namespace
-    end
-
+    # Set the namespace of the current node to the specified namespace
+    current_node.namespaces.namespace = tag_namespace if tag_namespace
 
     #
-    # Add all the attribute tags to the child node with their namespace or the
-    # the default namespace.
+    # Add all the attribute tags to the current node with their namespace, if one
+    # is defined, or the namespace handed down to the node.
     #
     self.class.attributes.each do |attribute|
-      attribute_namespace = child_node.namespaces.find_by_prefix(attribute.options[:namespace]) || default_namespace
-      # TODO: we need saving attribute functionality as well that is similar to elements
-      child_node[ "#{attribute_namespace ? "#{attribute_namespace.prefix}:" : ""}#{attribute.tag}" ] = send(attribute.method_name)
+      attribute_namespace = current_node.namespaces.find_by_prefix(attribute.options[:namespace]) || default_namespace
+      
+      value = send(attribute.method_name)
+
+      #
+      # If the attribute has a :on_save attribute defined that is a proc or
+      # a defined method, then call those with the current value.
+      #
+      if on_save_operation = attribute.options[:on_save]
+        if on_save_operation.is_a?(Proc)
+          value = on_save_operation.call(value)
+        elsif respond_to?(on_save_operation)
+          value = send(on_save_operation,value)
+        end
+      end
+      
+      current_node[ "#{attribute_namespace ? "#{attribute_namespace.prefix}:" : ""}#{attribute.tag}" ] = value
     end
 
+    #
+    # All all the elements defined (e.g. has_one, has_many, element) ...
+    #
     self.class.elements.each do |element|
 
       tag = element.tag || element.name
-
+      
+      element_namespace = current_node.namespaces.find_by_prefix(element.options[:namespace]) || tag_namespace
+      
       value = send(element.name)
 
       #
-      # If the element defines an on_save lambda/proc then we will call that
+      # If the element defines an :on_save lambda/proc then we will call that
       # operation on the specified value. This allows for operations to be 
       # performed to convert the value to a specific value to be saved to the xml.
       #
-      if element.options[:on_save]
-        value = element.options[:on_save].call(value)
+      if on_save_operation = element.options[:on_save]
+        if on_save_operation.is_a?(Proc)
+          value = on_save_operation.call(value)
+        elsif respond_to?(on_save_operation)
+          value = send(on_save_operation,value)
+        end
       end
 
       #
@@ -220,9 +244,7 @@ module HappyMapper
       # an empty element will be written to the xml
       #
       if value.nil? && element.options[:state_when_nil]
-        item_namespace = child_node.namespaces.find_by_prefix(element.options[:namespace]) || child_node.namespaces.find_by_prefix(self.class.namespace) || default_namespace
-        
-        child_node << XML::Node.new(tag,nil,item_namespace)
+        current_node << XML::Node.new(tag,nil,element_namespace)
       end
 
       #
@@ -243,30 +265,25 @@ module HappyMapper
         if item.is_a?(HappyMapper)
 
           #
-          # Other items are convertable to xml through the xml builder
-          # process should have their contents retrieved and attached
-          # to the builder structure
+          # Other HappyMapper items that are convertable should not be called
+          # with the current node and the namespace defined for the element.
           #
-          item.to_xml(child_node,child_node.namespaces.find_by_prefix(element.options[:namespace]))
+          item.to_xml(current_node,element_namespace)
 
         elsif item
 
-          item_namespace = child_node.namespaces.find_by_prefix(element.options[:namespace]) || child_node.namespaces.find_by_prefix(self.class.namespace) || default_namespace
-          
           #
           # When a value exists we should append the value for the tag
           #
-          child_node << XML::Node.new(tag,item.to_s,item_namespace)
+          current_node << XML::Node.new(tag,item.to_s,element_namespace)
 
         else
-          
-          item_namespace = child_node.namespaces.find_by_prefix(element.options[:namespace]) || child_node.namespaces.find_by_prefix(self.class.namespace) || default_namespace
           
           #
           # Normally a nil value would be ignored, however if specified then
           # an empty element will be written to the xml
           #
-          child_node << XML.Node.new(tag,nil,item_namespace) if element.options[:state_when_nil]
+          current_node << XML.Node.new(tag,nil,element_namespace) if element.options[:state_when_nil]
 
         end
 
@@ -275,15 +292,18 @@ module HappyMapper
     end
 
 
-
+    #
+    # Generate xml from a document if no node was passed as a parameter. Otherwise
+    # this method is being called recursively (or special case) and we should
+    # return the node with this node attached as a child.
+    #
     if write_out_to_xml
       document = XML::Document.new
-      document.root = child_node
+      document.root = current_node
       document.to_s
     else
-      node << child_node
+      parent_node
     end
-
 
   end
 

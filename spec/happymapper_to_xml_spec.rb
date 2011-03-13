@@ -85,8 +85,7 @@ module ToXML
         'date_created' => '2011-01-01 15:00:00')
         
         address.dates_updated = ["2011-01-01 16:01:00","2011-01-02 11:30:01"]
-        
-        puts address.to_xml
+
         @address_xml = XML::Parser.string(address.to_xml).parse.root
       end
       
