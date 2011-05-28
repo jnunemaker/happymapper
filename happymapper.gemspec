@@ -15,5 +15,4 @@ Gem::Specification.new do |s|
   s.files        = Dir.glob("{examples,lib,spec}/**/*") + %w[License Rakefile README.rdoc]
 
   s.add_dependency              'libxml-ruby', '~> 2.0'
-  s.add_development_dependency  'rspec',       '~> 1.3.0'
 end
