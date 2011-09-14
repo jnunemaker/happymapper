@@ -1,6 +1,8 @@
 require 'rubygems'
+require 'bundler/setup'
+
 require 'rake'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'spec/rake/spectask'
 require File.expand_path('../lib/happymapper/version', __FILE__)
 
@@ -33,7 +35,7 @@ task :website do
   sh %{rsync -av website/ jnunemaker@rubyforge.org:/var/www/gforge-projects/happymapper}
 end
 
-Rake::RDocTask.new do |r|
+RDoc::Task.new do |r|
   r.title    = 'HappyMapper Docs'
   r.main     = 'README.rdoc'
   r.rdoc_dir = 'doc'

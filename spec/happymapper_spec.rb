@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/spec_helper.rb'
+require 'spec_helper'
 require 'pp'
 require 'uri'
 require 'support/models'
@@ -172,7 +172,7 @@ describe HappyMapper do
     address.city.should == 'Oldenburg'
     address.country.should == 'Germany'
   end
-  
+
   it "should parse xml containing a has many relationship with primitive types" do
     address = MultiStreetAddress.parse(fixture_file('multi_street_address.xml'), :single => true)
     address.should_not be_nil
