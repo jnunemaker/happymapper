@@ -300,3 +300,38 @@ module Backpack
     content :body
   end
 end
+
+module Intrade
+  class EpochMillis
+    def self.parse(millis); Time.at(millis.to_i / 1000); end
+  end
+
+  class Message
+    include HappyMapper
+
+    tag 'msg'
+    attribute :message_id, Integer, :tag => 'msgID'
+    element :contract_id, Integer, :tag => 'conID'
+    element :symbol, String, :tag => 'symbol'
+    element :is_read, Boolean, :tag => 'readFlag'
+    element :type, String, :tag => 'type'
+    element :text, String, :tag => 'msg'
+    element :price, Float, :tag => 'price'
+    element :quantity, Integer, :tag => 'quantity'
+    element :side, String, :tag => 'side'
+    element :timestamp, EpochMillis, :tag => 'timestamp', :parser => :parse
+  end
+
+  class Messages
+    include HappyMapper
+
+    tag 'tsResponse'
+    attribute :operation, String, :tag => 'requestOp'
+    attribute :timestamp, EpochMillis, :tag => 'timestamp', :parser => :parse
+    attribute :result_code, Integer, :tag => 'resultCode'
+    element :error_message, String, :tag => 'faildesc'
+    element :session_key, String, :tag => 'sessionData'
+    has_many :messages, Message, :tag => 'msg', :xpath => './msg'
+  end
+end
+

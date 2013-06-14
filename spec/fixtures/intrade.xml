@@ -1,0 +1,29 @@
+<tsResponse requestOp="getUserMessages" resultCode="0" timestamp="1329416249820"
+            timetaken="475">
+   <msg msgID="123456">
+      <msgID>123456</msgID>
+      <conID>789012</conID>
+      <symbol>2012.PIGS.FLY</symbol>
+      <readFlag>false</readFlag>
+      <type>T</type>
+      <msg>345678901</msg>
+      <price>13.0</price>
+      <quantity>100</quantity>
+      <side>B</side>
+      <timestamp>1329415852000</timestamp>
+   </msg>
+   <msg msgID="123460">
+      <msgID>123460</msgID>
+      <conID>789013</conID>
+      <symbol>2012.SNOWBALL.INFERNO.MELT</symbol>
+      <readFlag>false</readFlag>
+      <type>T</type>
+      <msg>345678933</msg>
+      <price>13.0</price>
+      <quantity>100</quantity>
+      <side>S</side>
+      <timestamp>1329415873000</timestamp>
+   </msg>
+   <faildesc>Ok</faildesc>
+   <sessionData>10R3M1p5um0010r5174m37c0n53C737uR401p151C1N931175300031U5m0073mp0r1Nc1010UN7u71480R3370010R3m49n44119u4U73N1M40M1n1MV3n14M9U15n057Ru03X3Rc174710Nu114Mc01480r15n151u74119U1P3x34C0mm000C0n539u470u154u731ruR30010r1Nr3PR3h3n03R171Nv01up7473v31173553C111Um0010R33ufU9147nu114P4R147Ur3XC3P73uR51n70CC43C47CuP104747n0nPR0103N75un71ncu1p49U10fF1C140353rUn7m011174N1M103571480Rum</sessionData>
+</tsResponse>

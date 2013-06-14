@@ -350,6 +350,19 @@ describe HappyMapper do
     # tree.people.first.id.should == 'KWQS-BBQ'
   end
 
+  it "should support :xpath option" do
+    message_box = Intrade::Messages.parse(fixture_file('intrade.xml'))
+    message_box.timestamp.should == Time.at(1329416249)
+    message_box.error_message.should == "Ok"
+
+    # default xpath would default to './/msg', which would include
+    # nested nodes which are also named "msg", so xpath is
+    # explicitly supplied as option :xpath => './msg'
+    message_box.messages.should have(2).messages
+    message_box.messages[0].message_id.should == 123456
+    message_box.messages[1].message_id.should == 123460
+  end
+
   describe 'nested elements with namespaces' do
     module Namespaces
       class Info
