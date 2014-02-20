@@ -214,7 +214,7 @@ module HappyMapper
         end
       end
       
-      current_node[ "#{attribute_namespace ? "#{attribute_namespace.prefix}:" : ""}#{attribute.tag}" ] = value
+      current_node[ "#{attribute_namespace ? "#{attribute_namespace.prefix}:" : ""}#{attribute.tag}" ] = value.to_s
     end
 
     #
