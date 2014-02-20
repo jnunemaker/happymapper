@@ -8,6 +8,12 @@ module ToXML
     tag 'address'
 
     attribute :location, String
+    attribute :precipitation, Float
+    attribute :last_update, Time
+    attribute :mayor_elected, Date
+    attribute :last_earthquake, DateTime
+    attribute :revision, Integer
+    attribute :domestic, Boolean
 
     element :street, String
     element :postcode, String
@@ -82,7 +88,13 @@ module ToXML
         'postcode' => '98103',
         'city' => 'Seattle',
         'country' => Country.new(:name => 'USA', :code => 'us'),
-        'date_created' => '2011-01-01 15:00:00')
+        'date_created' => '2011-01-01 15:00:00',
+        'precipitation' => 58.3,
+        'last_update' =>  Time.new(1993, 02, 24, 12, 0, 0, "+09:00"),
+        'mayor_elected' => Date.new(2001, 2, 3) ,
+        'last_earthquake' => DateTime.new(2001, -11, -26, -20, -55, -54, '+7'),
+        'revision' => 42,
+        'domestic' => true)
 
         address.dates_updated = ["2011-01-01 16:01:00","2011-01-02 11:30:01"]
 
@@ -101,10 +113,6 @@ module ToXML
 
       it "should use the result of #housenumber method (not the @housenumber)" do
         @address_xml.find("housenumber").first.child.to_s.should == "[1313]"
-      end
-
-      it "should have the attribute 'location' with the value 'Home'" do
-        @address_xml.find('@location').first.child.to_s.should == "Home"
       end
 
       it "should add an empty description element" do
@@ -130,8 +138,35 @@ module ToXML
         @address_xml.find('country/countryName').first.child.to_s.should == "USA"
       end
 
-    end
+      it "should have the attribute 'location' with the value 'Home'" do
+        @address_xml.find('@location').first.child.to_s.should == 'Home'
+      end
 
+      it "should have the attribute 'precipitation' with the value '58.3'" do
+        @address_xml.find('@precipitation').first.child.to_s.should == '58.3'
+      end
+
+      it "should have the attribute 'last_update' with the value '1993-02-24 12:00:00 +0900'" do
+        @address_xml.find('@last_update').first.child.to_s.should == "1993-02-24 12:00:00 +0900"
+      end
+
+      it "should have the attribute 'mayor_elected' with the value '2001-02-03'" do
+        @address_xml.find('@mayor_elected').first.child.to_s.should == '2001-02-03'
+      end
+
+      it "should have the attribute 'last_earthquake' with the value ''" do
+        @address_xml.find('@last_earthquake').first.child.to_s.should == '2001-02-03T04:05:06+07:00'
+      end
+
+      it "should have the attribute 'revision' with the value '42'" do
+        @address_xml.find('@revision').first.child.to_s.should == '42'
+      end
+
+      it "should have the attribute 'domestic' with the value 'true'" do
+        @address_xml.find('@domestic').first.child.to_s.should == 'true'
+      end
+
+    end
 
   end
 
