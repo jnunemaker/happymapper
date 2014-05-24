@@ -140,7 +140,7 @@ module HappyMapper
   # Create an xml representation of the specified class based on defined
   # HappyMapper elements and attributes. The method is defined in a way
   # that it can be called recursively by classes that are also HappyMapper
-  # classes, allowg for the composition of classes.
+  # classes, allowing for the composition of classes.
   #
   def to_xml(parent_node = nil, default_namespace = nil)
 
