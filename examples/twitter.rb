@@ -22,13 +22,13 @@ class Status
   
   element :id, Integer
   element :text, String
-	element :created_at, Time
-	element :source, String
-	element :truncated, Boolean
-	element :in_reply_to_status_id, Integer
-	element :in_reply_to_user_id, Integer
-	element :favorited, Boolean
-	has_one :user, User
+  element :created_at, Time
+  element :source, String
+  element :truncated, Boolean
+  element :in_reply_to_status_id, Integer
+  element :in_reply_to_user_id, Integer
+  element :favorited, Boolean
+  has_one :user, User
 end
 
 statuses = Status.parse(file_contents)
