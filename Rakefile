@@ -2,13 +2,10 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'rake'
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 require File.expand_path('../lib/happymapper/version', __FILE__)
 
-Spec::Rake::SpecTask.new do |t|
-  t.ruby_opts << '-rubygems'
-  t.verbose = true
-end
+RSpec::Core::RakeTask.new(:spec)
 task :default => :spec
 
 desc 'Builds the gem'

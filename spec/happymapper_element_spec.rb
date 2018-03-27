@@ -2,16 +2,14 @@ require 'spec_helper'
 
 describe HappyMapper::Element do
   describe "initialization" do
-    before do
-      @attr = HappyMapper::Element.new(:foo, String)
-    end
+    let(:attr) { HappyMapper::Element.new(:foo, String) }
 
     it 'should know that it is an element' do
-      @attr.element?.should be_true
+      expect(attr.element?).to eq true
     end
 
     it 'should know that it is NOT an attribute' do
-      @attr.attribute?.should be_false
+      expect(attr.attribute?).to eq false
     end
   end
 end
