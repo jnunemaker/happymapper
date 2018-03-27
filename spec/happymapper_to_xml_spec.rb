@@ -106,64 +106,64 @@ module ToXML
         'city' => 'Seattle' }.each_pair do |property,value|
 
         it "should have the element '#{property}' with the value '#{value}'" do
-          @address_xml.find("#{property}").first.child.to_s.should == value
+          expect(@address_xml.find("#{property}").first.child.to_s).to eq value
         end
 
       end
 
       it "should use the result of #housenumber method (not the @housenumber)" do
-        @address_xml.find("housenumber").first.child.to_s.should == "[1313]"
+        expect(@address_xml.find("housenumber").first.child.to_s).to eq "[1313]"
       end
 
       it "should add an empty description element" do
-        @address_xml.find('description').first.child.to_s.should == ""
+        expect(@address_xml.find('description').first.child.to_s).to eq ""
       end
 
       it "should call #on_save when saving the time to convert the time" do
-        @address_xml.find('date_created').first.child.to_s.should == "15:00:00 01/01/11"
+        expect(@address_xml.find('date_created').first.child.to_s).to eq "15:00:00 01/01/11"
       end
 
       it "should handle multiple elements for 'has_many'" do
         dates_updated = @address_xml.find('dates_updated')
-        dates_updated.length.should == 2
-        dates_updated.first.child.to_s.should == "16:01:00 01/01/11"
-        dates_updated.last.child.to_s.should == "11:30:01 01/02/11"
+        expect(dates_updated.length).to eq 2
+        expect(dates_updated.first.child.to_s).to eq "16:01:00 01/01/11"
+        expect(dates_updated.last.child.to_s).to eq "11:30:01 01/02/11"
       end
 
       it "should write the country code" do
-        @address_xml.find('country/@countryCode').first.child.to_s.should == "us"
+        expect(@address_xml.find('country/@countryCode').first.child.to_s).to eq "us"
       end
 
       it "should write the country name" do
-        @address_xml.find('country/countryName').first.child.to_s.should == "USA"
+        expect(@address_xml.find('country/countryName').first.child.to_s).to eq "USA"
       end
 
       it "should have the attribute 'location' with the value 'Home'" do
-        @address_xml.find('@location').first.child.to_s.should == 'Home'
+        expect(@address_xml.find('@location').first.child.to_s).to eq 'Home'
       end
 
       it "should have the attribute 'precipitation' with the value '58.3'" do
-        @address_xml.find('@precipitation').first.child.to_s.should == '58.3'
+        expect(@address_xml.find('@precipitation').first.child.to_s).to eq '58.3'
       end
 
       it "should have the attribute 'last_update' with the value '1993-02-24 12:00:00 +0900'" do
-        @address_xml.find('@last_update').first.child.to_s.should == "1993-02-24 12:00:00 +0900"
+        expect(@address_xml.find('@last_update').first.child.to_s).to eq "1993-02-24 12:00:00 +0900"
       end
 
       it "should have the attribute 'mayor_elected' with the value '2001-02-03'" do
-        @address_xml.find('@mayor_elected').first.child.to_s.should == '2001-02-03'
+        expect(@address_xml.find('@mayor_elected').first.child.to_s).to eq '2001-02-03'
       end
 
       it "should have the attribute 'last_earthquake' with the value ''" do
-        @address_xml.find('@last_earthquake').first.child.to_s.should == '2001-02-03T04:05:06+07:00'
+        expect(@address_xml.find('@last_earthquake').first.child.to_s).to eq '2001-02-03T04:05:06+07:00'
       end
 
       it "should have the attribute 'revision' with the value '42'" do
-        @address_xml.find('@revision').first.child.to_s.should == '42'
+        expect(@address_xml.find('@revision').first.child.to_s).to eq '42'
       end
 
       it "should have the attribute 'domestic' with the value 'true'" do
-        @address_xml.find('@domestic').first.child.to_s.should == 'true'
+        expect(@address_xml.find('@domestic').first.child.to_s).to eq 'true'
       end
 
     end
