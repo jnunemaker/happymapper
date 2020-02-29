@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.add_dependency              'libxml-ruby', '~> 2.9'
 
   s.add_development_dependency  'rspec', '~> 3.7'
-  s.add_development_dependency  'rake', '~> 12.3.1'
+  s.add_development_dependency  'rake', '~> 13.0.1'
 end
